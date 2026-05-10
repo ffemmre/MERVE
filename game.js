@@ -14,6 +14,71 @@ const statMeta = {
   guc: { label: "Güç", color: "#79d77d" },
 };
 
+const spriteModels = {
+  merve: {
+    kind: "human",
+    skin: "#f0a07c",
+    hair: "#15131d",
+    shirt: "#d43c55",
+    pants: "#293047",
+    shoes: "#111522",
+    accent: "#f7c957",
+    glasses: true,
+    hairStyle: "bob",
+  },
+  anne: {
+    kind: "human",
+    skin: "#efa073",
+    hair: "#9b2534",
+    shirt: "#c6313f",
+    pants: "#181827",
+    shoes: "#111522",
+    accent: "#1f2030",
+    hairStyle: "short",
+  },
+  baba: {
+    kind: "human",
+    skin: "#f2b082",
+    hair: "#f2b082",
+    shirt: "#e9edf5",
+    pants: "#3569a7",
+    shoes: "#17213a",
+    accent: "#1d3c78",
+    bald: true,
+  },
+  oguz: {
+    kind: "human",
+    skin: "#e99a67",
+    hair: "#9c6235",
+    shirt: "#f1dfb6",
+    pants: "#37465f",
+    shoes: "#111522",
+    accent: "#2a3149",
+    glasses: true,
+    beard: true,
+    hairStyle: "crop",
+  },
+  kiz: {
+    kind: "human",
+    skin: "#efa17d",
+    hair: "#241827",
+    shirt: "#4e7bd4",
+    pants: "#24365c",
+    shoes: "#111522",
+    accent: "#f3a64f",
+    hairStyle: "long",
+  },
+  fiko: {
+    kind: "cat",
+    fur: "#f2f3f0",
+    patch: "#6c717a",
+    stripe: "#484b54",
+    eye: "#75d33f",
+    collar: "#ef5b2f",
+    bow: "#f5b21b",
+  },
+};
+
 const scenes = [
   {
     id: "ayrilis",
@@ -139,7 +204,7 @@ const scenes = [
     memory: "Fiko'nun Mırıltıları",
     characters: [
       { key: "merve", name: "MERVE", img: asset("merve"), x: "29%", y: "7%", w: "166px", mw: "136px", sw: "118px", object: "50% 15%", className: "hero" },
-      { key: "fiko", name: "KEDİ FİKO", img: asset("kedi-fiko"), x: "57%", y: "9%", w: "224px", mw: "168px", sw: "132px", object: "48% 50%", className: "cat" },
+      { key: "fiko", name: "KEDİ FİKO", img: asset("kedi-fiko"), x: "57%", y: "9%", w: "168px", mw: "136px", sw: "112px", object: "48% 50%", className: "cat" },
       { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "79%", y: "7%", w: "130px", sw: "92px", object: "50% 18%" },
     ],
     lines: [
@@ -170,7 +235,7 @@ const scenes = [
       { key: "merve", name: "MERVE", img: asset("merve"), x: "38%", y: "7%", w: "176px", mw: "140px", sw: "116px", object: "50% 15%", className: "hero" },
       { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "60%", y: "7%", w: "176px", mw: "140px", sw: "116px", object: "50% 18%" },
       { key: "baba", name: "BABA", img: asset("baba"), x: "84%", y: "7%", w: "112px", sw: "80px", object: "50% 20%" },
-      { key: "fiko", name: "FIKO", img: asset("kedi-fiko"), x: "50%", y: "52%", w: "88px", sw: "64px", object: "48% 50%", className: "cat small-label" },
+      { key: "fiko", name: "FİKO", img: asset("kedi-fiko"), x: "50%", y: "9%", w: "96px", sw: "70px", object: "48% 50%", className: "cat small-label" },
     ],
     lines: [
       { speaker: "ANLATICI", text: "Merve 27 yaşında Oğuz ile evlenir. Fiko da bu hikayenin sessiz ama gururlu tanığıdır." },
@@ -201,7 +266,7 @@ const scenes = [
       { key: "kiz", name: "KIZ KARDEŞ 15", img: asset("kiz-kardes"), x: "39%", y: "8%", w: "126px", sw: "88px", object: "50% 18%" },
       { key: "merve", name: "MERVE", img: asset("merve"), x: "60%", y: "7%", w: "164px", mw: "134px", sw: "112px", object: "50% 15%", className: "hero" },
       { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "77%", y: "7%", w: "154px", mw: "126px", sw: "106px", object: "50% 18%" },
-      { key: "fiko", name: "FIKO", img: asset("kedi-fiko"), x: "88%", y: "40%", w: "92px", sw: "66px", object: "48% 50%", className: "cat small-label" },
+      { key: "fiko", name: "FİKO", img: asset("kedi-fiko"), x: "88%", y: "9%", w: "98px", sw: "70px", object: "48% 50%", className: "cat small-label" },
     ],
     lines: [
       { speaker: "ANLATICI", text: "Merve, Oğuz ve Fiko Kanada'ya taşınırken havalimanında eller kalkar. Anne, Baba ve artık 15 yaşında olan kız kardeş el sallar." },
@@ -229,7 +294,7 @@ const scenes = [
     characters: [
       { key: "merve", name: "MERVE", img: asset("merve"), x: "35%", y: "7%", w: "190px", mw: "148px", sw: "126px", object: "50% 15%", className: "hero" },
       { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "60%", y: "7%", w: "176px", mw: "138px", sw: "116px", object: "50% 18%" },
-      { key: "fiko", name: "FIKO", img: asset("kedi-fiko"), x: "78%", y: "38%", w: "122px", sw: "88px", object: "48% 50%", className: "cat" },
+      { key: "fiko", name: "FİKO", img: asset("kedi-fiko"), x: "78%", y: "9%", w: "118px", sw: "84px", object: "48% 50%", className: "cat" },
     ],
     lines: [
       { speaker: "ANLATICI", text: "Aradan yıllar geçer. Merve 35 yaşındadır. Bugün, hayatının en sessiz ama en büyük haberlerinden birini öğrenir: anne olacaktır." },
@@ -333,7 +398,11 @@ function loadState() {
     state.selectedChoices = saved.selectedChoices || {};
     state.completed = saved.completed || {};
   } catch {
-    localStorage.removeItem("merveRetroGame");
+    try {
+      localStorage.removeItem("merveRetroGame");
+    } catch {
+      // Kayit temizlenemese de oyun sifir durumdan acilabilir.
+    }
   }
 }
 
@@ -360,27 +429,128 @@ function renderTimeline() {
   });
 }
 
+function getLifeStage(character, scene) {
+  if (character.key === "fiko") {
+    return "cat";
+  }
+
+  if ((character.className || "").includes("baby")) {
+    return "baby";
+  }
+
+  if ((character.className || "").includes("child")) {
+    return "child";
+  }
+
+  if (character.key === "kiz" && scene.id === "kanada") {
+    return "teen";
+  }
+
+  if (character.key === "merve" && ["lise", "bogazici", "oguz"].includes(scene.id)) {
+    return "teen";
+  }
+
+  return "adult";
+}
+
+function modelStyles(character, model) {
+  const base = [
+    `--x:${character.x}`,
+    `--y:${character.y}`,
+    `--w:${character.w}`,
+    character.mw ? `--mw:${character.mw}` : "",
+    character.sw ? `--sw:${character.sw}` : "",
+    character.scale ? `--scale:${character.scale}` : "",
+  ];
+
+  if (model.kind === "cat") {
+    base.push(`--fur:${model.fur}`, `--patch:${model.patch}`, `--stripe:${model.stripe}`, `--eye:${model.eye}`, `--collar:${model.collar}`, `--bow:${model.bow}`);
+  } else {
+    base.push(
+      `--skin:${model.skin}`,
+      `--hair:${model.hair}`,
+      `--shirt:${model.shirt}`,
+      `--pants:${model.pants}`,
+      `--shoes:${model.shoes}`,
+      `--accent:${model.accent}`,
+    );
+  }
+
+  return base.filter(Boolean).join(";");
+}
+
+function renderHumanModel(character, model, lifeStage) {
+  const accessoryClasses = [
+    model.glasses ? "has-glasses" : "",
+    model.beard ? "has-beard" : "",
+    model.bald ? "is-bald" : "",
+    model.hairStyle ? `hair-${model.hairStyle}` : "",
+    lifeStage,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return `
+    <div class="character-model sprite-human ${character.key} ${accessoryClasses}" aria-hidden="true">
+      <span class="sprite-shadow"></span>
+      <span class="leg leg-left"><i></i></span>
+      <span class="leg leg-right"><i></i></span>
+      <span class="arm arm-left"></span>
+      <span class="arm arm-right"></span>
+      <span class="torso"><i class="torso-accent"></i></span>
+      <span class="neck"></span>
+      <span class="head">
+        <i class="ear ear-left"></i>
+        <i class="ear ear-right"></i>
+        <i class="hair-back"></i>
+        <i class="face"></i>
+        <i class="hair-front"></i>
+        <i class="eye eye-left"></i>
+        <i class="eye eye-right"></i>
+        <i class="glasses"></i>
+        <i class="beard"></i>
+        <i class="mouth"></i>
+      </span>
+    </div>
+  `;
+}
+
+function renderCatModel(character) {
+  return `
+    <div class="character-model sprite-cat ${character.key}" aria-hidden="true">
+      <span class="cat-shadow"></span>
+      <span class="cat-tail"></span>
+      <span class="cat-body">
+        <i class="cat-patch"></i>
+        <i class="cat-leg cat-leg-left"></i>
+        <i class="cat-leg cat-leg-right"></i>
+      </span>
+      <span class="cat-head">
+        <i class="cat-ear cat-ear-left"></i>
+        <i class="cat-ear cat-ear-right"></i>
+        <i class="cat-mark"></i>
+        <i class="cat-eye cat-eye-left"></i>
+        <i class="cat-eye cat-eye-right"></i>
+        <i class="cat-nose"></i>
+        <i class="cat-whiskers"></i>
+      </span>
+      <span class="cat-collar"></span>
+      <span class="cat-bow"></span>
+    </div>
+  `;
+}
+
 function renderCast(scene) {
   els.castLayer.innerHTML = scene.characters
     .map((character) => {
-      const classes = ["character", character.className || ""].join(" ");
-      const styles = [
-        `--x:${character.x}`,
-        `--y:${character.y}`,
-        `--w:${character.w}`,
-        character.mw ? `--mw:${character.mw}` : "",
-        character.sw ? `--sw:${character.sw}` : "",
-        character.scale ? `--scale:${character.scale}` : "",
-        character.object ? `--object-position:${character.object}` : "",
-      ]
-        .filter(Boolean)
-        .join(";");
+      const model = spriteModels[character.key] || spriteModels.merve;
+      const lifeStage = getLifeStage(character, scene);
+      const classes = ["character", model.kind === "cat" ? "cat-actor" : "human-actor", character.key, character.className || "", lifeStage].join(" ");
+      const modelMarkup = model.kind === "cat" ? renderCatModel(character, model, lifeStage) : renderHumanModel(character, model, lifeStage);
 
       return `
-        <article class="${classes}" style="${styles}">
-          <div class="character-card">
-            <img src="${character.img}" alt="${character.name} retro portresi" />
-          </div>
+        <article class="${classes}" style="${modelStyles(character, model)}">
+          ${modelMarkup}
           <span class="character-label">${character.name}</span>
         </article>
       `;

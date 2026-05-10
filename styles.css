@@ -460,26 +460,478 @@ button {
   transform: translateX(-50%) scale(var(--scale, 1));
   transform-origin: center bottom;
   display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
   justify-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
-.character-card {
+.character-model {
+  position: relative;
   width: 100%;
-  aspect-ratio: var(--ratio, 3 / 4);
-  overflow: hidden;
-  border: 5px solid var(--shadow);
-  background: var(--panel-soft);
-  box-shadow: 7px 7px 0 var(--shadow);
+  image-rendering: pixelated;
 }
 
-.character-card img {
-  width: 100%;
-  height: 100%;
+.sprite-human {
+  aspect-ratio: 0.55 / 1;
+  animation: sprite-idle 1250ms steps(2, end) infinite;
+}
+
+.sprite-shadow,
+.cat-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 72%;
+  height: 9%;
+  transform: translateX(-50%);
+  background: rgba(5, 5, 9, 0.4);
+  border: 3px solid rgba(5, 5, 9, 0.55);
+}
+
+.sprite-human .leg,
+.sprite-human .arm,
+.sprite-human .torso,
+.sprite-human .neck,
+.sprite-human .head,
+.sprite-human .head i {
+  position: absolute;
   display: block;
-  object-fit: cover;
-  object-position: var(--object-position, 50% 22%);
-  image-rendering: auto;
+}
+
+.sprite-human .leg {
+  bottom: 8%;
+  width: 22%;
+  height: 28%;
+  background: var(--pants);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .leg-left {
+  left: 27%;
+}
+
+.sprite-human .leg-right {
+  right: 27%;
+}
+
+.sprite-human .leg i {
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  bottom: -13%;
+  height: 22%;
+  background: var(--shoes);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .torso {
+  left: 50%;
+  bottom: 35%;
+  width: 58%;
+  height: 31%;
+  transform: translateX(-50%);
+  background: var(--shirt);
+  border: 4px solid var(--shadow);
+  clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%);
+}
+
+.sprite-human .torso-accent {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 32%;
+  background:
+    linear-gradient(90deg, transparent 0 38%, rgba(255, 255, 255, 0.55) 38% 44%, transparent 44% 56%, rgba(255, 255, 255, 0.55) 56% 62%, transparent 62%),
+    var(--accent);
+  border-bottom: 4px solid var(--shadow);
+}
+
+.sprite-human.merve .torso-accent {
+  height: 24%;
+  background:
+    linear-gradient(90deg, transparent 0 44%, var(--gold) 44% 56%, transparent 56%),
+    #a82038;
+}
+
+.sprite-human.anne .torso {
+  background:
+    linear-gradient(90deg, var(--accent) 0 18%, var(--shirt) 18% 82%, var(--accent) 82%),
+    var(--shirt);
+}
+
+.sprite-human.baba .torso {
+  background:
+    linear-gradient(90deg, var(--accent) 0 24%, var(--shirt) 24% 76%, var(--accent) 76%),
+    var(--shirt);
+}
+
+.sprite-human.oguz .torso {
+  background: var(--shirt);
+}
+
+.sprite-human.kiz .torso {
+  background:
+    linear-gradient(135deg, transparent 0 46%, rgba(255, 255, 255, 0.4) 46% 54%, transparent 54%),
+    var(--shirt);
+}
+
+.sprite-human .arm {
+  bottom: 35%;
+  width: 18%;
+  height: 30%;
+  background: var(--skin);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .arm-left {
+  left: 10%;
+  transform: rotate(8deg);
+}
+
+.sprite-human .arm-right {
+  right: 10%;
+  transform: rotate(-8deg);
+}
+
+.sprite-human .neck {
+  left: 50%;
+  bottom: 64%;
+  width: 20%;
+  height: 8%;
+  transform: translateX(-50%);
+  background: var(--skin);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .head {
+  left: 50%;
+  bottom: 67%;
+  width: 61%;
+  height: 30%;
+  transform: translateX(-50%);
+}
+
+.sprite-human .face {
+  inset: 10% 8% 0;
+  background: var(--skin);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .ear {
+  top: 40%;
+  width: 13%;
+  height: 20%;
+  background: var(--skin);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .ear-left {
+  left: 0;
+}
+
+.sprite-human .ear-right {
+  right: 0;
+}
+
+.sprite-human .hair-back {
+  left: 5%;
+  top: 6%;
+  width: 90%;
+  height: 82%;
+  background: var(--hair);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human .hair-front {
+  left: 10%;
+  top: 0;
+  width: 82%;
+  height: 34%;
+  background:
+    linear-gradient(135deg, var(--hair) 0 34%, transparent 34%),
+    linear-gradient(225deg, var(--hair) 0 34%, transparent 34%),
+    var(--hair);
+  border: 4px solid var(--shadow);
+}
+
+.sprite-human.hair-bob .hair-back {
+  height: 96%;
+  clip-path: polygon(10% 8%, 90% 8%, 100% 62%, 88% 100%, 12% 100%, 0 62%);
+}
+
+.sprite-human.hair-long .hair-back {
+  height: 112%;
+  clip-path: polygon(10% 4%, 90% 4%, 100% 58%, 92% 100%, 8% 100%, 0 58%);
+}
+
+.sprite-human.hair-short .hair-back {
+  height: 58%;
+  clip-path: polygon(8% 18%, 92% 18%, 100% 72%, 70% 100%, 20% 92%, 0 70%);
+}
+
+.sprite-human.hair-crop .hair-back {
+  height: 48%;
+  clip-path: polygon(10% 12%, 90% 8%, 100% 52%, 76% 82%, 30% 76%, 0 54%);
+}
+
+.sprite-human.is-bald .hair-back,
+.sprite-human.is-bald .hair-front {
+  display: none;
+}
+
+.sprite-human .eye {
+  top: 48%;
+  width: 10%;
+  height: 8%;
+  background: #111522;
+  z-index: 2;
+}
+
+.sprite-human .eye-left {
+  left: 33%;
+}
+
+.sprite-human .eye-right {
+  right: 33%;
+}
+
+.sprite-human.has-glasses .glasses {
+  left: 25%;
+  top: 42%;
+  width: 50%;
+  height: 17%;
+  border: 4px solid #251525;
+  border-left-width: 5px;
+  border-right-width: 5px;
+  z-index: 3;
+}
+
+.sprite-human.has-glasses .glasses::before {
+  content: "";
+  position: absolute;
+  left: 44%;
+  top: 35%;
+  width: 12%;
+  height: 4px;
+  background: #251525;
+}
+
+.sprite-human .mouth {
+  left: 40%;
+  top: 71%;
+  width: 20%;
+  height: 6%;
+  background: #7f2431;
+  z-index: 2;
+}
+
+.sprite-human.has-beard .beard {
+  left: 24%;
+  top: 58%;
+  width: 52%;
+  height: 30%;
+  background: var(--hair);
+  clip-path: polygon(0 0, 100% 0, 88% 78%, 52% 100%, 12% 78%);
+  z-index: 1;
+}
+
+.sprite-human.has-beard .mouth {
+  background: #fff6dd;
+  height: 5%;
+  z-index: 3;
+}
+
+.sprite-human.baby {
+  aspect-ratio: 0.72 / 1;
+}
+
+.sprite-human.baby .torso {
+  bottom: 22%;
+  width: 68%;
+  height: 30%;
+  clip-path: none;
+}
+
+.sprite-human.baby .arm {
+  bottom: 26%;
+  height: 20%;
+}
+
+.sprite-human.baby .leg {
+  bottom: 7%;
+  height: 20%;
+}
+
+.sprite-human.baby .head {
+  bottom: 51%;
+  width: 76%;
+  height: 40%;
+}
+
+.sprite-human.child,
+.sprite-human.teen {
+  aspect-ratio: 0.58 / 1;
+}
+
+.sprite-human.child .head {
+  width: 68%;
+  height: 34%;
+}
+
+.sprite-human.child .torso {
+  height: 29%;
+}
+
+.hero .sprite-human {
+  filter: drop-shadow(0 0 8px rgba(246, 196, 83, 0.45));
+}
+
+.sprite-cat {
+  aspect-ratio: 1.35 / 1;
+  animation: cat-idle 1050ms steps(2, end) infinite;
+}
+
+.sprite-cat span,
+.sprite-cat i {
+  position: absolute;
+  display: block;
+}
+
+.cat-body {
+  left: 21%;
+  bottom: 18%;
+  width: 58%;
+  height: 42%;
+  background: var(--fur);
+  border: 4px solid var(--shadow);
+  clip-path: polygon(8% 22%, 34% 6%, 78% 8%, 100% 34%, 88% 82%, 36% 100%, 4% 78%);
+}
+
+.cat-patch {
+  left: 8%;
+  top: 0;
+  width: 58%;
+  height: 54%;
+  background:
+    repeating-linear-gradient(135deg, var(--patch) 0 8px, var(--stripe) 8px 12px),
+    var(--patch);
+  clip-path: polygon(0 0, 100% 0, 72% 100%, 12% 84%);
+}
+
+.cat-head {
+  right: 12%;
+  bottom: 41%;
+  width: 42%;
+  height: 42%;
+  background: var(--fur);
+  border: 4px solid var(--shadow);
+}
+
+.cat-ear {
+  top: -24%;
+  width: 30%;
+  height: 34%;
+  background: #ff9ea6;
+  border: 4px solid var(--shadow);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.cat-ear-left {
+  left: 2%;
+}
+
+.cat-ear-right {
+  right: 2%;
+}
+
+.cat-mark {
+  left: 0;
+  top: 0;
+  width: 48%;
+  height: 55%;
+  background:
+    repeating-linear-gradient(135deg, var(--patch) 0 7px, var(--stripe) 7px 11px),
+    var(--patch);
+}
+
+.cat-eye {
+  top: 46%;
+  width: 13%;
+  height: 13%;
+  background: var(--eye);
+  border: 3px solid var(--shadow);
+}
+
+.cat-eye-left {
+  left: 33%;
+}
+
+.cat-eye-right {
+  right: 20%;
+}
+
+.cat-nose {
+  right: 32%;
+  top: 64%;
+  width: 10%;
+  height: 8%;
+  background: #ef7f9b;
+}
+
+.cat-whiskers {
+  right: 8%;
+  top: 66%;
+  width: 42%;
+  height: 16%;
+  background:
+    linear-gradient(0deg, transparent 0 42%, var(--shadow) 42% 58%, transparent 58%),
+    linear-gradient(16deg, transparent 0 44%, var(--shadow) 44% 56%, transparent 56%),
+    linear-gradient(-16deg, transparent 0 44%, var(--shadow) 44% 56%, transparent 56%);
+}
+
+.cat-tail {
+  left: 2%;
+  bottom: 38%;
+  width: 28%;
+  height: 24%;
+  border: 8px solid var(--shadow);
+  border-right: 0;
+  border-bottom: 0;
+  box-shadow: inset 6px 6px 0 var(--patch);
+}
+
+.cat-leg {
+  bottom: -18%;
+  width: 18%;
+  height: 24%;
+  background: var(--fur);
+  border: 4px solid var(--shadow);
+}
+
+.cat-leg-left {
+  left: 18%;
+}
+
+.cat-leg-right {
+  right: 16%;
+}
+
+.cat-collar {
+  right: 28%;
+  bottom: 42%;
+  width: 24%;
+  height: 7%;
+  background: var(--collar);
+  border: 3px solid var(--shadow);
+}
+
+.cat-bow {
+  right: 23%;
+  bottom: 36%;
+  width: 22%;
+  height: 16%;
+  background: var(--bow);
+  border: 3px solid var(--shadow);
+  clip-path: polygon(0 0, 45% 28%, 100% 0, 76% 50%, 100% 100%, 45% 72%, 0 100%, 24% 50%);
 }
 
 .character-label {
@@ -494,27 +946,30 @@ button {
   box-shadow: 4px 4px 0 var(--shadow);
 }
 
-.character.hero .character-card {
-  outline: 4px solid var(--gold);
-}
-
-.character.child .character-card {
-  aspect-ratio: 1 / 1.08;
-  border-color: #f6c453;
-}
-
-.character.baby .character-card {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border-color: #8ce6d4;
-}
-
-.character.cat .character-card {
-  aspect-ratio: 1.2 / 1;
-}
-
 .character.small-label .character-label {
   font-size: 0.74rem;
+}
+
+@keyframes sprite-idle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes cat-idle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-2px) rotate(-1deg);
+  }
 }
 
 .dialogue-box {
