@@ -1,18 +1,20 @@
 # Merve: 8-Bit Hayat Günlüğü
 
-Retro görsel roman / RPG tarzı, bağımlılıksız bir web oyunu.
+Canvas tabanlı retro hikaye oyunu.
 
 ## İçerik
 
-- `index.html` ana oyun ekranı
-- `styles.css` retro arcade arayüzü
-- `game.js` sahneler, seçimler, karakter gelişimi ve oyun içi karakter modelleri
-- `assets/` karakter portre/referans görselleri
+- `index.html` oyun sayfası
+- `styles.css` arcade çerçeve ve font düzeni
+- `game.js` canvas sahne motoru, diyalog akışı ve piksel karakter çizimleri
+- `assets/` referans/portre görselleri
 
-Sahnede görünen karakterler fotoğraf kartı değildir; CSS ile modellenmiş retro sprite'lardır. Portre görselleri yan panel ve referans varlık olarak tutulur.
+Sahnedeki karakterler fotoğraf olarak yerleştirilmez. Merve, Oğuz, Anne, Baba, Kız Kardeş ve Kedi Fiko canvas içinde piksellerle modellenir.
 
-## Çalıştırma
+## Oynama
 
-`index.html` dosyasını tarayıcıda açmak yeterli. GitHub Pages için repoyu yayınlayıp root klasörü seçilebilir.
+GitHub Pages adresini aç:
 
-Oyun yerel tarayıcı kaydını kullanır; `R` düğmesi ilerlemeyi sıfırlar.
+https://ffemmre.github.io/MERVE/
+
+`ENTER`, `SPACE` veya ekrana tıklama ile ilerlenir.

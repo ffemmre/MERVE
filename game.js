@@ -1,792 +1,842 @@
-const asset = (name) => `assets/${name}.png`;
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const W = canvas.width;
+const H = canvas.height;
 
-const baseStats = {
-  cesaret: 42,
-  bilgelik: 26,
-  sevgi: 48,
-  guc: 34,
+ctx.imageSmoothingEnabled = false;
+
+const hudLeft = document.getElementById("hudLeft");
+const hudCenter = document.getElementById("hudCenter");
+const hudRight = document.getElementById("hudRight");
+
+const colors = {
+  ink: "#060611",
+  pink: "#ff4081",
+  rose: "#ff80ab",
+  cream: "#fff1d6",
+  blue: "#80d0ff",
+  gold: "#ffd166",
+  green: "#69d58a",
+  skin: "#d89568",
+  skin2: "#f0a77a",
+  shadow: "rgba(0,0,0,0.45)",
 };
 
-const statMeta = {
-  cesaret: { label: "Cesaret", color: "#f6c453" },
-  bilgelik: { label: "Bilgelik", color: "#6db7ff" },
-  sevgi: { label: "Sevgi", color: "#e85c74" },
-  guc: { label: "Güç", color: "#79d77d" },
-};
-
-const spriteModels = {
+const people = {
   merve: {
-    kind: "human",
-    skin: "#f0a07c",
-    hair: "#15131d",
-    shirt: "#d43c55",
-    pants: "#293047",
-    shoes: "#111522",
-    accent: "#f7c957",
+    skin: "#eba078",
+    shade: "#b86d4e",
+    hair: "#11101a",
+    shirt: "#c92f4a",
+    pants: "#202744",
+    shoes: "#080812",
+    accent: "#ffd166",
     glasses: true,
     hairStyle: "bob",
   },
-  anne: {
-    kind: "human",
-    skin: "#efa073",
-    hair: "#9b2534",
-    shirt: "#c6313f",
-    pants: "#181827",
-    shoes: "#111522",
-    accent: "#1f2030",
-    hairStyle: "short",
-  },
-  baba: {
-    kind: "human",
-    skin: "#f2b082",
-    hair: "#f2b082",
-    shirt: "#e9edf5",
-    pants: "#3569a7",
-    shoes: "#17213a",
-    accent: "#1d3c78",
-    bald: true,
-  },
   oguz: {
-    kind: "human",
     skin: "#e99a67",
-    hair: "#9c6235",
+    shade: "#ad6946",
+    hair: "#8b572f",
     shirt: "#f1dfb6",
     pants: "#37465f",
     shoes: "#111522",
-    accent: "#2a3149",
+    accent: "#345c8c",
     glasses: true,
     beard: true,
     hairStyle: "crop",
   },
+  anne: {
+    skin: "#efa073",
+    shade: "#b7654c",
+    hair: "#962435",
+    shirt: "#c83346",
+    pants: "#151522",
+    shoes: "#090914",
+    accent: "#1d1b28",
+    hairStyle: "short",
+  },
+  baba: {
+    skin: "#f0ad7a",
+    shade: "#b97852",
+    hair: "#f0ad7a",
+    shirt: "#e9edf5",
+    pants: "#396aa5",
+    shoes: "#111522",
+    accent: "#1d3c78",
+    bald: true,
+  },
   kiz: {
-    kind: "human",
     skin: "#efa17d",
-    hair: "#241827",
+    shade: "#b96b50",
+    hair: "#211524",
     shirt: "#4e7bd4",
     pants: "#24365c",
-    shoes: "#111522",
+    shoes: "#101020",
     accent: "#f3a64f",
     hairStyle: "long",
-  },
-  fiko: {
-    kind: "cat",
-    fur: "#f2f3f0",
-    patch: "#6c717a",
-    stripe: "#484b54",
-    eye: "#75d33f",
-    collar: "#ef5b2f",
-    bow: "#f5b21b",
   },
 };
 
 const scenes = [
   {
-    id: "ayrilis",
+    id: "home",
     level: "LEVEL 01",
-    title: "Valiz Hazır",
+    title: "VALİZ HAZIR",
     age: "14 yaş",
     year: "2005",
-    growth: "Küçük Kız",
-    location: "Aile Evi -> Balıkesir Fen Lisesi",
-    sign: "OTOBÜS: BALIKESİR FEN LİSESİ",
-    backdrop: "home",
-    prop: "bus",
-    memory: "İlk Valiz",
-    characters: [
-      { key: "anne", name: "ANNE", img: asset("anne"), x: "16%", y: "7%", w: "138px", sw: "102px", object: "50% 20%" },
-      { key: "baba", name: "BABA", img: asset("baba"), x: "31%", y: "7%", w: "142px", sw: "104px", object: "50% 22%" },
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "52%", y: "7%", w: "128px", sw: "100px", object: "50% 14%", className: "hero child" },
-      { key: "kiz", name: "KIZ KARDEŞ 2", img: asset("kiz-kardes"), x: "70%", y: "16%", w: "78px", sw: "62px", object: "50% 20%", className: "baby small-label" },
+    place: "Aile evi",
+    bg: "home",
+    cast: [
+      { key: "anne", x: 155, y: 372, s: 1.55, face: "right", stage: "adult" },
+      { key: "baba", x: 280, y: 372, s: 1.55, face: "right", stage: "adult" },
+      { key: "merve", x: 430, y: 382, s: 1.28, face: "left", stage: "child" },
+      { key: "kiz", x: 560, y: 388, s: 1.35, face: "left", stage: "baby" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "Merve 14 yaşında, valizinin fermuarını kapatır. Balıkesir Fen Lisesi yolu, evin kapısından çok daha büyük görünür." },
-      { speaker: "ANNE", text: "Anne son kez saçını düzeltir. Baba otobüs saatini kontrol eder. İki yaşındaki kız kardeşi, vedanın adını bilmeden Merve'nin elini tutar." },
-      { speaker: "MERVE", text: "Korkuyorum, ama bu korkunun içinde bir ışık var. Sanki kendi hayatımın ilk tuşuna basıyorum." },
-    ],
-    choices: [
-      { text: "Ailesine sarılıp valizi almak", effects: { sevgi: 6, cesaret: 4 }, result: "Vedayı bir kopuş değil, yanında taşıyacağı sıcak bir güç yapar." },
-      { text: "Kardeşine küçük bir not bırakmak", effects: { sevgi: 8, bilgelik: 2 }, result: "Küçük kardeşine yazdığı not, aradaki mesafeyi yıllarca yumuşatacak ilk hatıra olur." },
-      { text: "Otobüse kendi adımıyla binmek", effects: { cesaret: 7, guc: 3 }, result: "Merve ilk defa bir kapıdan tek başına geçer ve yolun kendisini büyüteceğini sezer." },
+      { who: "ANLATICI", tone: "n", text: "Merve 14 yaşında. Valiz hazır, otobüs saati yaklaşıyor." },
+      { who: "ANNE", tone: "s", text: "Anne son kez saçını düzeltir. Baba valizin sapını kontrol eder." },
+      { who: "MERVE", tone: "m", text: "Balıkesir Fen Lisesi'ne gidiyorum. Korkuyorum ama içimde ışıklı bir cesaret var." },
+      { who: "ANLATICI", tone: "n", text: "İki yaşındaki kız kardeşi vedanın adını bilmeden Merve'nin elini bırakmak istemez." },
     ],
   },
   {
-    id: "lise",
+    id: "school",
     level: "LEVEL 02",
-    title: "Fen Lisesi Günleri",
+    title: "BALIKESİR FEN LİSESİ",
     age: "15-18 yaş",
     year: "2006-2009",
-    growth: "Çalışkan Öğrenci",
-    location: "Balıkesir Fen Lisesi",
-    sign: "BALIKESİR FEN LİSESİ",
-    backdrop: "school",
-    prop: "books",
-    memory: "Lise Defteri",
-    characters: [
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "44%", y: "7%", w: "178px", mw: "150px", sw: "128px", object: "50% 15%", className: "hero" },
-    ],
+    place: "Balıkesir",
+    bg: "school",
+    cast: [{ key: "merve", x: 390, y: 378, s: 1.42, face: "right", stage: "teen" }],
     lines: [
-      { speaker: "ANLATICI", text: "Yatakhane ışıkları erken söner, ama Merve'nin defterinde sorular yanmaya devam eder. Fizik, matematik, yeni arkadaşlıklar ve ilk yalnızlıklar aynı sıraya oturur." },
-      { speaker: "MERVE", text: "Başarılı olmak sadece not değilmiş. İnsan bazen yardım istemeyi, bazen de kendine güvenmeyi aynı hafta öğreniyor." },
-      { speaker: "ANLATICI", text: "Balıkesir Fen Lisesi'nde büyürken aklı keskinleşir, kalbi yumuşar, iradesi sessizce güçlenir." },
-    ],
-    choices: [
-      { text: "Zor sorunun peşini bırakmamak", effects: { bilgelik: 7, guc: 3 }, result: "Bir problem çözülünce yalnızca cevap değil, sabır da kazanılır." },
-      { text: "Yeni arkadaşına yer açmak", effects: { sevgi: 5, bilgelik: 4 }, result: "Merve, birlikte büyümenin tek başına parlamaktan daha kalıcı olduğunu fark eder." },
-      { text: "Ailesini arayıp gününü anlatmak", effects: { sevgi: 6, cesaret: 2 }, result: "Sesler telefondan gelir, ama ev hissi bir süreliğine odanın içine yayılır." },
+      { who: "ANLATICI", tone: "n", text: "Yatakhane ışıkları erken söner, ama Merve'nin defterinde sorular yanmaya devam eder." },
+      { who: "MERVE", tone: "m", text: "Başarılı olmak sadece not değilmiş. Yardım istemeyi de, kendime güvenmeyi de öğreniyorum." },
+      { who: "ANLATICI", tone: "n", text: "Fizik, matematik, arkadaşlık ve ilk yalnızlıklar onu sessizce büyütür." },
     ],
   },
   {
-    id: "bogazici",
+    id: "bosphorus",
     level: "LEVEL 03",
-    title: "Boğaziçi Kapısı",
+    title: "BOĞAZİÇİ KAPISI",
     age: "18 yaş",
     year: "2009",
-    growth: "Üniversiteli",
-    location: "İstanbul / Boğaziçi Üniversitesi",
-    sign: "KAYIT: BOĞAZİÇİ ÜNİVERSİTESİ",
-    backdrop: "bosphorus",
-    prop: "bridge",
-    memory: "Boğaz Rüzgarı",
-    characters: [
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "45%", y: "7%", w: "188px", mw: "150px", sw: "130px", object: "50% 15%", className: "hero" },
-      { key: "anne", name: "ANNE", img: asset("anne"), x: "18%", y: "7%", w: "116px", sw: "82px", object: "50% 20%" },
-      { key: "baba", name: "BABA", img: asset("baba"), x: "77%", y: "7%", w: "120px", sw: "86px", object: "50% 20%" },
+    place: "İstanbul",
+    bg: "bosphorus",
+    cast: [
+      { key: "anne", x: 170, y: 378, s: 1.35, face: "right", stage: "adult" },
+      { key: "merve", x: 390, y: 378, s: 1.45, face: "right", stage: "teen" },
+      { key: "baba", x: 615, y: 378, s: 1.38, face: "left", stage: "adult" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "Sınav sonucu ekranda parlar: Boğaziçi Üniversitesi. Merve bu kez yalnızca bir okula değil, koca bir şehrin ritmine taşınır." },
-      { speaker: "MERVE", text: "İstanbul kalabalık, hızlı ve gürültülü. Ama içimde Balıkesir'de biriktirdiğim sakin bir pusula var." },
-      { speaker: "BABA", text: "Baba valizin tekerini yoklar. Anne kapıdan içeri bakar. Aile bu kez geride değil; Merve'nin arkasında durur." },
-    ],
-    choices: [
-      { text: "Kayıt dosyasını teslim etmek", effects: { cesaret: 4, bilgelik: 4 }, result: "Yeni kampüs, Merve'nin adını bir kez daha geniş bir sayfaya yazar." },
-      { text: "Boğaz'a bakıp derin nefes almak", effects: { guc: 5, sevgi: 3 }, result: "Şehir büyük kalır; Merve de onun içinde büyümeye karar verir." },
-      { text: "Ailesine teşekkür etmek", effects: { sevgi: 7, bilgelik: 2 }, result: "Kazanmanın içinde emek kadar destek de olduğunu kalbine kaydeder." },
+      { who: "ANLATICI", tone: "n", text: "Sınav sonucu ekranda parlar: Boğaziçi Üniversitesi." },
+      { who: "MERVE", tone: "m", text: "İstanbul büyük ve gürültülü. Ama içimde Balıkesir'de biriktirdiğim sakin bir pusula var." },
+      { who: "BABA", tone: "b", text: "Aile bu kez geride değil; Merve'nin arkasında durur." },
     ],
   },
   {
-    id: "oguz",
+    id: "campus",
     level: "LEVEL 04",
-    title: "Kampüs Yolu",
+    title: "KAMPÜS YOLU",
     age: "19 yaş",
     year: "2010",
-    growth: "Genç Kadın",
-    location: "Boğaziçi Kampüsü",
-    sign: "KAMPÜS GÖREVİ: OĞUZ İLE TANIŞ",
-    backdrop: "campus",
-    prop: "bridge",
-    memory: "İlk Sohbet",
-    characters: [
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "36%", y: "7%", w: "178px", mw: "146px", sw: "126px", object: "50% 15%", className: "hero" },
-      { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "64%", y: "7%", w: "178px", mw: "146px", sw: "126px", object: "50% 18%" },
+    place: "Boğaziçi Kampüsü",
+    bg: "campus",
+    cast: [
+      { key: "merve", x: 335, y: 378, s: 1.48, face: "right", stage: "teen" },
+      { key: "oguz", x: 500, y: 378, s: 1.48, face: "left", stage: "adult" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "Bir kampüs yokuşunda Oğuz'la aynı masaya, aynı sohbete, sonra aynı hayale denk gelirler." },
-      { speaker: "OĞUZ", text: "Oğuz'un sakin mizahı, Merve'nin hızlı düşünen aklına iyi gelir. Konuşmalar önce derslerden, sonra hayattan açılır." },
-      { speaker: "MERVE", text: "Bazı insanlar yolunu değiştirmez; yolun içindeki manzarayı daha güzel görmeni sağlar." },
-    ],
-    choices: [
-      { text: "Sohbeti uzatmak", effects: { sevgi: 5, cesaret: 3 }, result: "Merve ve Oğuz, aynı cümlede gülmenin ne kadar doğal olduğunu keşfeder." },
-      { text: "Kendi hayalini açıkça anlatmak", effects: { cesaret: 5, guc: 3 }, result: "Merve, sevilmenin kendini küçültmek değil, daha rahat anlatmak olduğunu hisseder." },
-      { text: "Bir sonraki kahveyi sözleşmek", effects: { sevgi: 6, bilgelik: 2 }, result: "Küçük bir kahve sözü, ileride kocaman bir eve dönüşecek ilk işaret olur." },
+      { who: "ANLATICI", tone: "n", text: "Bir kampüs yokuşunda Oğuz'la aynı masaya, aynı sohbete, sonra aynı hayale denk gelirler." },
+      { who: "OĞUZ", tone: "o", text: "Oğuz'un sakin mizahı, Merve'nin hızlı düşünen aklına iyi gelir." },
+      { who: "MERVE", tone: "m", text: "Bazı insanlar yolunu değiştirmez; yolun içindeki manzarayı daha güzel gösterir." },
     ],
   },
   {
     id: "fiko",
     level: "LEVEL 05",
-    title: "Balikci Lokantasi",
+    title: "BALIKÇI LOKANTASI",
     age: "24 yaş",
     year: "2015",
-    growth: "İstanbul'da Çalışan",
-    location: "İstanbul / Balıkçı Lokantası",
-    sign: "YAN GÖREV: KEDİ FİKO",
-    backdrop: "istanbul",
-    prop: "fish",
-    memory: "Fiko'nun Mırıltıları",
-    characters: [
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "29%", y: "7%", w: "166px", mw: "136px", sw: "118px", object: "50% 15%", className: "hero" },
-      { key: "fiko", name: "KEDİ FİKO", img: asset("kedi-fiko"), x: "57%", y: "9%", w: "168px", mw: "136px", sw: "112px", object: "48% 50%", className: "cat" },
-      { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "79%", y: "7%", w: "130px", sw: "92px", object: "50% 18%" },
+    place: "İstanbul",
+    bg: "diner",
+    cast: [
+      { key: "merve", x: 250, y: 382, s: 1.55, face: "right", stage: "adult" },
+      { key: "fiko", x: 435, y: 386, s: 1.85, face: "left" },
+      { key: "oguz", x: 610, y: 382, s: 1.42, face: "left", stage: "adult" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "İstanbul'da çalıştığı günlerden birinde, bir balıkçı lokantasının kenarında gri beyaz bir kedi belirir: Kedi Fiko." },
-      { speaker: "MERVE", text: "Fiko masanın altından bakar. Merve ilk kez bir canlının sevgisinin kelimeden çok ritim olduğunu duyar: mırıltı, bekleyiş, güven." },
-      { speaker: "ANLATICI", text: "Onu sahiplenmek, Merve'ye başka bir sevgi türünü tattırır. Bakmak, sabretmek ve bir eve can katmak." },
-    ],
-    choices: [
-      { text: "Fiko için eve bir köşe hazırlamak", effects: { sevgi: 8, guc: 2 }, result: "Fiko eve geldiğinde, Merve'nin hayatında yeni bir sıcaklık hep aynı noktaya kıvrılır." },
-      { text: "Veteriner randevusunu almak", effects: { bilgelik: 4, sevgi: 5 }, result: "Sevgi, Merve'nin elinde pratik bir sorumluluğa dönüşür." },
-      { text: "Oğuz'la birlikte isim koymak", effects: { sevgi: 6, cesaret: 3 }, result: "Fiko'nun adı evde ilk ortak efsane gibi yankılanır." },
+      { who: "ANLATICI", tone: "n", text: "İstanbul'da çalıştığı günlerden birinde, balıkçı lokantasının kenarında gri beyaz bir kedi belirir." },
+      { who: "MERVE", tone: "m", text: "Fiko masanın altından bakar. Merve, sevginin bazen sadece mırıltı ve güven olduğunu duyar." },
+      { who: "ANLATICI", tone: "n", text: "Kedi Fiko'yu sahiplenmek ona bambaşka bir sevgiyi tattırır." },
     ],
   },
   {
-    id: "dugun",
+    id: "wedding",
     level: "LEVEL 06",
-    title: "27 Yaşında Evlilik",
+    title: "27 YAŞINDA EVLİLİK",
     age: "27 yaş",
     year: "2018",
-    growth: "Eş ve Yol Arkadaşı",
-    location: "İstanbul / Düğün Günü",
-    sign: "ANA GÖREV TAMAMLANDI: MERVE + OĞUZ",
-    backdrop: "wedding",
-    prop: "rings",
-    memory: "Düğün Halkaları",
-    characters: [
-      { key: "anne", name: "ANNE", img: asset("anne"), x: "13%", y: "7%", w: "112px", sw: "80px", object: "50% 20%" },
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "38%", y: "7%", w: "176px", mw: "140px", sw: "116px", object: "50% 15%", className: "hero" },
-      { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "60%", y: "7%", w: "176px", mw: "140px", sw: "116px", object: "50% 18%" },
-      { key: "baba", name: "BABA", img: asset("baba"), x: "84%", y: "7%", w: "112px", sw: "80px", object: "50% 20%" },
-      { key: "fiko", name: "FİKO", img: asset("kedi-fiko"), x: "50%", y: "9%", w: "96px", sw: "70px", object: "48% 50%", className: "cat small-label" },
+    place: "İstanbul",
+    bg: "wedding",
+    cast: [
+      { key: "anne", x: 125, y: 382, s: 1.25, face: "right", stage: "adult" },
+      { key: "merve", x: 320, y: 382, s: 1.55, face: "right", stage: "adult", outfit: "wedding" },
+      { key: "oguz", x: 485, y: 382, s: 1.55, face: "left", stage: "adult", outfit: "wedding" },
+      { key: "baba", x: 675, y: 382, s: 1.25, face: "left", stage: "adult" },
+      { key: "fiko", x: 410, y: 392, s: 1.2, face: "right" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "Merve 27 yaşında Oğuz ile evlenir. Fiko da bu hikayenin sessiz ama gururlu tanığıdır." },
-      { speaker: "MERVE", text: "Artık hayat sadece başarılacak hedefler değil; birlikte kurulacak sofralar, paylaşılacak yorgunluklar ve çoğalan gülüşlerdir." },
-      { speaker: "OĞUZ", text: "Oğuz'un elini tutunca Merve, gücün bazen tek başına durmak, bazen de güvenle yaslanmak olduğunu bilir." },
-    ],
-    choices: [
-      { text: "Yemin ederken kendi sesini duymak", effects: { cesaret: 4, sevgi: 6 }, result: "Merve, seçilmiş bir ortaklığın içinde kendi sesinin daha da berraklaştığını fark eder." },
-      { text: "Ailesiyle dans etmek", effects: { sevgi: 7, guc: 2 }, result: "Evden ayrılan küçük kız, bu kez ailesinin ortasında yeni bir ev kurar." },
-      { text: "Fiko'yu da aile fotoğrafına almak", effects: { sevgi: 8, bilgelik: 1 }, result: "Fotoğrafta Fiko da vardır; çünkü aile bazen patilerle tamamlanır." },
+      { who: "ANLATICI", tone: "n", text: "Merve 27 yaşında Oğuz ile evlenir. Fiko da bu hikayenin sessiz ve gururlu tanığıdır." },
+      { who: "MERVE", tone: "m", text: "Hayat artık sadece hedefler değil; birlikte kurulacak sofralar ve çoğalan gülüşlerdir." },
+      { who: "OĞUZ", tone: "o", text: "Oğuz'un elini tutunca Merve, güvenle yaslanmanın da güç olduğunu bilir." },
     ],
   },
   {
-    id: "kanada",
+    id: "airport",
     level: "LEVEL 07",
-    title: "Kanada Yolu",
+    title: "KANADA YOLU",
     age: "27 yaş",
     year: "2018",
-    growth: "Yeni Ülkeye Hazır",
-    location: "İstanbul Havalimanı -> Kanada",
-    sign: "UÇUŞ: KANADA / ELVEDA SAHNESİ",
-    backdrop: "airport",
-    prop: "plane",
-    memory: "El Sallayanlar",
-    characters: [
-      { key: "anne", name: "ANNE", img: asset("anne"), x: "11%", y: "8%", w: "108px", sw: "76px", object: "50% 20%" },
-      { key: "baba", name: "BABA", img: asset("baba"), x: "25%", y: "8%", w: "112px", sw: "78px", object: "50% 20%" },
-      { key: "kiz", name: "KIZ KARDEŞ 15", img: asset("kiz-kardes"), x: "39%", y: "8%", w: "126px", sw: "88px", object: "50% 18%" },
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "60%", y: "7%", w: "164px", mw: "134px", sw: "112px", object: "50% 15%", className: "hero" },
-      { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "77%", y: "7%", w: "154px", mw: "126px", sw: "106px", object: "50% 18%" },
-      { key: "fiko", name: "FİKO", img: asset("kedi-fiko"), x: "88%", y: "9%", w: "98px", sw: "70px", object: "48% 50%", className: "cat small-label" },
+    place: "Havalimanı",
+    bg: "airport",
+    cast: [
+      { key: "anne", x: 105, y: 382, s: 1.23, face: "right", stage: "adult" },
+      { key: "baba", x: 205, y: 382, s: 1.25, face: "right", stage: "adult" },
+      { key: "kiz", x: 315, y: 382, s: 1.32, face: "right", stage: "teen" },
+      { key: "merve", x: 535, y: 382, s: 1.42, face: "left", stage: "adult" },
+      { key: "oguz", x: 650, y: 382, s: 1.42, face: "left", stage: "adult" },
+      { key: "fiko", x: 735, y: 392, s: 1.05, face: "left" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "Merve, Oğuz ve Fiko Kanada'ya taşınırken havalimanında eller kalkar. Anne, Baba ve artık 15 yaşında olan kız kardeş el sallar." },
-      { speaker: "KIZ KARDEŞ", text: "İki yaşında elini bırakmak istemeyen küçük kardeş, şimdi büyümüş; gururla el sallayan bir genç kız olmuştur." },
-      { speaker: "MERVE", text: "Merve bir kez daha gidiyordur. Ama bu kez içinde küçük kız korkusu kadar, yetişkin kadın güveni de vardır." },
-    ],
-    choices: [
-      { text: "Ailesine son kez dönüp el sallamak", effects: { sevgi: 7, guc: 3 }, result: "Veda, Merve'nin hayatında artık bir bitiş değil; yeni bölüme geçiş müziği olur." },
-      { text: "Fiko'nun taşıma çantasını kontrol etmek", effects: { sevgi: 6, bilgelik: 4 }, result: "Yeni ülkeye ilk giren duygu kaygı değil, birlikte olmanın sorumluluğudur." },
-      { text: "Oğuz'la yeni evi hayal etmek", effects: { cesaret: 4, sevgi: 5 }, result: "Merve ve Oğuz, haritada uzak görünen yeri konuşarak eve yaklaştırır." },
+      { who: "ANLATICI", tone: "n", text: "Merve, Oğuz ve Fiko Kanada'ya taşınırken havalimanında eller kalkar." },
+      { who: "KIZ KARDEŞ", tone: "s", text: "İki yaşında elini bırakmak istemeyen kardeşi artık 15 yaşındadır; gururla el sallar." },
+      { who: "MERVE", tone: "m", text: "Bu kez içinde küçük kız korkusu kadar, yetişkin kadın güveni de vardır." },
     ],
   },
   {
-    id: "bugun",
+    id: "today",
     level: "FINAL",
-    title: "Yeni Can Haberi",
+    title: "YENİ CAN HABERİ",
     age: "35 yaş",
     year: "10 Mayıs 2026",
-    growth: "Sevgi Dolu ve Güçlü",
-    location: "Kanada / Bugün",
-    sign: "YENİ SEVİYE AÇILDI: ANNE",
-    backdrop: "today",
-    prop: "test",
-    memory: "Bugünün Haberi",
-    characters: [
-      { key: "merve", name: "MERVE", img: asset("merve"), x: "35%", y: "7%", w: "190px", mw: "148px", sw: "126px", object: "50% 15%", className: "hero" },
-      { key: "oguz", name: "OĞUZ", img: asset("oguz"), x: "60%", y: "7%", w: "176px", mw: "138px", sw: "116px", object: "50% 18%" },
-      { key: "fiko", name: "FİKO", img: asset("kedi-fiko"), x: "78%", y: "9%", w: "118px", sw: "84px", object: "48% 50%", className: "cat" },
+    place: "Kanada",
+    bg: "today",
+    cast: [
+      { key: "merve", x: 315, y: 382, s: 1.65, face: "right", stage: "adult" },
+      { key: "oguz", x: 500, y: 382, s: 1.55, face: "left", stage: "adult" },
+      { key: "fiko", x: 640, y: 392, s: 1.35, face: "left" },
     ],
     lines: [
-      { speaker: "ANLATICI", text: "Aradan yıllar geçer. Merve 35 yaşındadır. Bugün, hayatının en sessiz ama en büyük haberlerinden birini öğrenir: anne olacaktır." },
-      { speaker: "MERVE", text: "Balıkesir'e giden o küçük kızın içindeki cesaret, İstanbul'da öğrendiği bilgelik, Fiko'yla büyüyen sevgisi ve Kanada'da taşıdığı güç aynı anda nefes alır." },
-      { speaker: "ANLATICI", text: "Merve artık tecrübeli, sevgi dolu ve güçlü bir kadındır. Yeni seviye başlar; bu kez kalbin içinde iki kişilik bir müzik vardır." },
-    ],
-    choices: [
-      { text: "Haberi Oğuz'la paylaşmak", effects: { sevgi: 8, cesaret: 3 }, result: "Oda bir anda büyür. Merve'nin hikayesine yeni ve minicik bir kahraman katılır." },
-      { text: "Ailesini aramak", effects: { sevgi: 7, bilgelik: 3 }, result: "İlk valizin olduğu evden bugüne uzanan hat, telefonda yeniden parlar." },
-      { text: "Fiko'yu kucağına alıp düşünmek", effects: { sevgi: 6, guc: 5 }, result: "Fiko'nun mırıltısı, Merve'ye başka bir bakımı zaten öğrendiğini hatırlatır." },
+      { who: "ANLATICI", tone: "n", text: "Aradan yıllar geçer. Merve 35 yaşındadır." },
+      { who: "MERVE", tone: "m", text: "Bugün hayatının en sessiz ama en büyük haberlerinden birini öğrenir: anne olacaktır." },
+      { who: "ANLATICI", tone: "n", text: "Küçük kız cesareti, İstanbul bilgeliği, Fiko sevgisi ve Kanada gücü aynı kalpte buluşur." },
     ],
   },
 ];
 
-const state = {
-  started: false,
-  sceneIndex: 0,
-  lineIndex: 0,
-  mode: "dialogue",
-  selectedChoices: {},
-  completed: {},
-  focusedChoice: 0,
-};
+let mode = "title";
+let sceneIndex = 0;
+let lineIndex = 0;
+let tick = 0;
+let frame = 0;
+let particles = [];
+let flash = 0;
 
-const els = {
-  bootScreen: document.getElementById("bootScreen"),
-  startButton: document.getElementById("startButton"),
-  sceneTitle: document.getElementById("sceneTitle"),
-  levelLabel: document.getElementById("levelLabel"),
-  ageLabel: document.getElementById("ageLabel"),
-  yearLabel: document.getElementById("yearLabel"),
-  growthLabel: document.getElementById("growthLabel"),
-  timeline: document.getElementById("timeline"),
-  sceneStage: document.getElementById("sceneStage"),
-  sceneSign: document.getElementById("sceneSign"),
-  stageProp: document.getElementById("stageProp"),
-  castLayer: document.getElementById("castLayer"),
-  speakerName: document.getElementById("speakerName"),
-  locationLabel: document.getElementById("locationLabel"),
-  dialogueText: document.getElementById("dialogueText"),
-  choiceGrid: document.getElementById("choiceGrid"),
-  resultLine: document.getElementById("resultLine"),
-  prevButton: document.getElementById("prevButton"),
-  nextButton: document.getElementById("nextButton"),
-  resetButton: document.getElementById("resetButton"),
-  statList: document.getElementById("statList"),
-  memoryList: document.getElementById("memoryList"),
-};
-
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value));
+function rect(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
 }
 
-function currentScene() {
-  return scenes[state.sceneIndex];
+function line(x1, y1, x2, y2, color, width = 1) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.beginPath();
+  ctx.moveTo(Math.round(x1), Math.round(y1));
+  ctx.lineTo(Math.round(x2), Math.round(y2));
+  ctx.stroke();
 }
 
-function getStats() {
-  const stats = { ...baseStats };
-
-  scenes.forEach((scene) => {
-    const choiceIndex = state.selectedChoices[scene.id];
-    if (choiceIndex === undefined) {
-      return;
-    }
-
-    const effects = scene.choices[choiceIndex].effects;
-    Object.entries(effects).forEach(([key, value]) => {
-      stats[key] = clamp((stats[key] || 0) + value, 0, 100);
-    });
-  });
-
-  return stats;
+function pixelText(text, x, y, size, color, align = "left") {
+  ctx.font = `${size}px "Press Start 2P", monospace`;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.fillText(text, x, y);
+  ctx.textAlign = "left";
 }
 
-function getMemories() {
-  return scenes
-    .filter((scene) => state.completed[scene.id] || state.selectedChoices[scene.id] !== undefined)
-    .map((scene) => scene.memory);
+function drawHeart(x, y, size, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(0, size * 0.35);
+  ctx.bezierCurveTo(-size * 0.55, -size * 0.25, -size, size * 0.2, 0, size);
+  ctx.bezierCurveTo(size, size * 0.2, size * 0.55, -size * 0.25, 0, size * 0.35);
+  ctx.fill();
+  ctx.restore();
 }
 
-function saveState() {
-  try {
-    localStorage.setItem("merveRetroGame", JSON.stringify(state));
-  } catch {
-    // Oyun dosya olarak acildiginda bazi tarayicilar yerel kaydi kapatabilir.
-  }
-}
-
-function loadState() {
-  try {
-    const saved = JSON.parse(localStorage.getItem("merveRetroGame"));
-    if (!saved || typeof saved !== "object") {
-      return;
-    }
-
-    state.started = Boolean(saved.started);
-    state.sceneIndex = clamp(Number(saved.sceneIndex) || 0, 0, scenes.length - 1);
-    state.lineIndex = clamp(Number(saved.lineIndex) || 0, 0, currentScene().lines.length - 1);
-    state.mode = ["dialogue", "choice", "result", "ending"].includes(saved.mode) ? saved.mode : "dialogue";
-    state.selectedChoices = saved.selectedChoices || {};
-    state.completed = saved.completed || {};
-  } catch {
-    try {
-      localStorage.removeItem("merveRetroGame");
-    } catch {
-      // Kayit temizlenemese de oyun sifir durumdan acilabilir.
-    }
-  }
-}
-
-function renderTimeline() {
-  els.timeline.innerHTML = scenes
-    .map((scene, index) => {
-      const complete = state.completed[scene.id] || state.selectedChoices[scene.id] !== undefined;
-      return `
-        <button class="timeline-button ${index === state.sceneIndex ? "is-active" : ""} ${complete ? "is-complete" : ""}" type="button" data-index="${index}">
-          <span>${String(index + 1).padStart(2, "0")}</span>
-          <span>
-            <strong>${scene.title}</strong>
-            <small>${scene.age}</small>
-          </span>
-        </button>
-      `;
-    })
-    .join("");
-
-  els.timeline.querySelectorAll("button").forEach((button) => {
-    button.addEventListener("click", () => {
-      goToScene(Number(button.dataset.index));
-    });
-  });
-}
-
-function getLifeStage(character, scene) {
-  if (character.key === "fiko") {
-    return "cat";
+function drawHuman(feetX, feetY, scale, face, key, stage = "adult", outfit = "") {
+  if (stage === "baby") {
+    drawBaby(feetX, feetY, scale, face);
+    return;
   }
 
-  if ((character.className || "").includes("baby")) {
-    return "baby";
+  const p = people[key];
+  const U = 2 * scale;
+  const gw = 18;
+  const gh = stage === "child" ? 25 : stage === "teen" ? 27 : 28;
+  const ox = feetX - (gw * U) / 2;
+  const oy = feetY - gh * U;
+
+  ctx.save();
+  ctx.translate(ox, oy);
+  if (face === "left") {
+    ctx.translate(gw * U, 0);
+    ctx.scale(-1, 1);
   }
 
-  if ((character.className || "").includes("child")) {
-    return "child";
-  }
+  const r = (x, y, w, h, c) => rect(x * U, y * U, w * U, h * U, c);
+  const px = (x, y, c) => r(x, y, 1, 1, c);
+  const step = frame % 24 < 12 ? 0 : 1;
 
-  if (character.key === "kiz" && scene.id === "kanada") {
-    return "teen";
-  }
+  r(3, gh - 1, 12, 1, colors.shadow);
 
-  if (character.key === "merve" && ["lise", "bogazici", "oguz"].includes(scene.id)) {
-    return "teen";
-  }
-
-  return "adult";
-}
-
-function modelStyles(character, model) {
-  const base = [
-    `--x:${character.x}`,
-    `--y:${character.y}`,
-    `--w:${character.w}`,
-    character.mw ? `--mw:${character.mw}` : "",
-    character.sw ? `--sw:${character.sw}` : "",
-    character.scale ? `--scale:${character.scale}` : "",
-  ];
-
-  if (model.kind === "cat") {
-    base.push(`--fur:${model.fur}`, `--patch:${model.patch}`, `--stripe:${model.stripe}`, `--eye:${model.eye}`, `--collar:${model.collar}`, `--bow:${model.bow}`);
+  if (stage === "child") {
+    r(4, 18, 4, 5, p.pants);
+    r(10, 18, 4, 5, p.pants);
+    r(3, 23, 5, 2, p.shoes);
+    r(10, 23, 5, 2, p.shoes);
+    r(3, 11, 12, 8, outfit === "wedding" ? "#f7f1e8" : p.shirt);
+    r(1, 13 + step, 3, 5, p.skin);
+    r(14, 13 - step, 3, 5, p.skin);
+    r(7, 9, 4, 3, p.skin);
+    drawHead(r, px, p, 3, 0, 12, 11, true);
   } else {
-    base.push(
-      `--skin:${model.skin}`,
-      `--hair:${model.hair}`,
-      `--shirt:${model.shirt}`,
-      `--pants:${model.pants}`,
-      `--shoes:${model.shoes}`,
-      `--accent:${model.accent}`,
-    );
-  }
+    r(4, 20, 4, 6, p.pants);
+    r(10, 20, 4, 6, p.pants);
+    r(3, 26, 5, 2, p.shoes);
+    r(10, 26, 5, 2, p.shoes);
+    r(3, 12, 12, 9, outfit === "wedding" && key === "merve" ? "#f7f1e8" : outfit === "wedding" && key === "oguz" ? "#111522" : p.shirt);
+    r(1, 13 + step, 3, 6, p.skin);
+    r(14, 13 - step, 3, 6, p.skin);
+    r(7, 10, 4, 3, p.skin);
 
-  return base.filter(Boolean).join(";");
-}
-
-function renderHumanModel(character, model, lifeStage) {
-  const accessoryClasses = [
-    model.glasses ? "has-glasses" : "",
-    model.beard ? "has-beard" : "",
-    model.bald ? "is-bald" : "",
-    model.hairStyle ? `hair-${model.hairStyle}` : "",
-    lifeStage,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  return `
-    <div class="character-model sprite-human ${character.key} ${accessoryClasses}" aria-hidden="true">
-      <span class="sprite-shadow"></span>
-      <span class="leg leg-left"><i></i></span>
-      <span class="leg leg-right"><i></i></span>
-      <span class="arm arm-left"></span>
-      <span class="arm arm-right"></span>
-      <span class="torso"><i class="torso-accent"></i></span>
-      <span class="neck"></span>
-      <span class="head">
-        <i class="ear ear-left"></i>
-        <i class="ear ear-right"></i>
-        <i class="hair-back"></i>
-        <i class="face"></i>
-        <i class="hair-front"></i>
-        <i class="eye eye-left"></i>
-        <i class="eye eye-right"></i>
-        <i class="glasses"></i>
-        <i class="beard"></i>
-        <i class="mouth"></i>
-      </span>
-    </div>
-  `;
-}
-
-function renderCatModel(character) {
-  return `
-    <div class="character-model sprite-cat ${character.key}" aria-hidden="true">
-      <span class="cat-shadow"></span>
-      <span class="cat-tail"></span>
-      <span class="cat-body">
-        <i class="cat-patch"></i>
-        <i class="cat-leg cat-leg-left"></i>
-        <i class="cat-leg cat-leg-right"></i>
-      </span>
-      <span class="cat-head">
-        <i class="cat-ear cat-ear-left"></i>
-        <i class="cat-ear cat-ear-right"></i>
-        <i class="cat-mark"></i>
-        <i class="cat-eye cat-eye-left"></i>
-        <i class="cat-eye cat-eye-right"></i>
-        <i class="cat-nose"></i>
-        <i class="cat-whiskers"></i>
-      </span>
-      <span class="cat-collar"></span>
-      <span class="cat-bow"></span>
-    </div>
-  `;
-}
-
-function renderCast(scene) {
-  els.castLayer.innerHTML = scene.characters
-    .map((character) => {
-      const model = spriteModels[character.key] || spriteModels.merve;
-      const lifeStage = getLifeStage(character, scene);
-      const classes = ["character", model.kind === "cat" ? "cat-actor" : "human-actor", character.key, character.className || "", lifeStage].join(" ");
-      const modelMarkup = model.kind === "cat" ? renderCatModel(character, model, lifeStage) : renderHumanModel(character, model, lifeStage);
-
-      return `
-        <article class="${classes}" style="${modelStyles(character, model)}">
-          ${modelMarkup}
-          <span class="character-label">${character.name}</span>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderStats() {
-  const stats = getStats();
-  els.statList.innerHTML = Object.entries(statMeta)
-    .map(([key, meta]) => {
-      const value = stats[key];
-      return `
-        <div class="stat-row">
-          <div class="stat-title">
-            <span>${meta.label}</span>
-            <span>${value}/100</span>
-          </div>
-          <div class="meter" aria-label="${meta.label}">
-            <div class="meter-fill" style="--value:${value}%; --color:${meta.color}"></div>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
-}
-
-function renderMemories() {
-  const memories = getMemories();
-  if (memories.length === 0) {
-    els.memoryList.innerHTML = '<span class="memory-chip is-empty">Boş Slot</span>';
-    return;
-  }
-
-  els.memoryList.innerHTML = memories.map((memory) => `<span class="memory-chip">${memory}</span>`).join("");
-}
-
-function renderDialogue(scene) {
-  const selectedChoiceIndex = state.selectedChoices[scene.id];
-  const selectedChoice = selectedChoiceIndex !== undefined ? scene.choices[selectedChoiceIndex] : null;
-
-  els.choiceGrid.innerHTML = "";
-  els.resultLine.hidden = true;
-  els.nextButton.disabled = false;
-
-  if (state.mode === "choice") {
-    const lastLine = scene.lines[scene.lines.length - 1];
-    els.speakerName.textContent = "SEÇİM";
-    els.dialogueText.textContent = lastLine.text;
-    els.nextButton.disabled = true;
-    els.choiceGrid.innerHTML = scene.choices
-      .map((choice, index) => `<button class="choice-button ${index === state.focusedChoice ? "is-selected" : ""}" type="button" data-index="${index}">${choice.text}</button>`)
-      .join("");
-
-    els.choiceGrid.querySelectorAll("button").forEach((button) => {
-      button.addEventListener("click", () => choose(Number(button.dataset.index)));
-    });
-    return;
-  }
-
-  if (state.mode === "result" || state.mode === "ending") {
-    const finalLine = scene.lines[scene.lines.length - 1];
-    els.speakerName.textContent = "KAZANIM";
-    els.dialogueText.textContent = selectedChoice ? selectedChoice.result : finalLine.text;
-    els.resultLine.hidden = false;
-    els.resultLine.textContent = scene.id === "bugun" ? "Oyun bitti. Yeni hayat bölümü açık: Merve anne olmaya hazırlanıyor." : `${scene.memory} envantere eklendi.`;
-    els.nextButton.textContent = scene.id === "bugun" ? "Final" : "Sonraki";
-    els.nextButton.disabled = scene.id === "bugun";
-    return;
-  }
-
-  const line = scene.lines[state.lineIndex];
-  els.speakerName.textContent = line.speaker;
-  els.dialogueText.textContent = line.text;
-  els.nextButton.textContent = state.lineIndex === scene.lines.length - 1 ? "Seçime Geç" : "Devam";
-}
-
-function render() {
-  const scene = currentScene();
-  els.sceneTitle.textContent = scene.title;
-  els.levelLabel.textContent = scene.level;
-  els.ageLabel.textContent = scene.age;
-  els.yearLabel.textContent = scene.year;
-  els.growthLabel.textContent = scene.growth;
-  els.locationLabel.textContent = scene.location;
-  els.sceneSign.textContent = scene.sign;
-  els.sceneStage.className = `scene-stage ${scene.backdrop}`;
-  els.stageProp.className = `stage-prop ${scene.prop}`;
-  els.prevButton.disabled = state.sceneIndex === 0 && state.lineIndex === 0 && state.mode === "dialogue";
-
-  renderCast(scene);
-  renderDialogue(scene);
-  renderTimeline();
-  renderStats();
-  renderMemories();
-  saveState();
-}
-
-function goToScene(index) {
-  state.sceneIndex = clamp(index, 0, scenes.length - 1);
-  state.lineIndex = 0;
-  state.mode = state.selectedChoices[currentScene().id] !== undefined ? "result" : "dialogue";
-  state.focusedChoice = 0;
-  render();
-}
-
-function next() {
-  const scene = currentScene();
-
-  if (state.mode === "dialogue") {
-    if (state.lineIndex < scene.lines.length - 1) {
-      state.lineIndex += 1;
-    } else {
-      state.mode = "choice";
-      state.focusedChoice = 0;
+    if (key === "merve" && outfit !== "wedding") {
+      px(7, 13, p.accent);
+      px(8, 14, p.accent);
+      px(9, 14, p.accent);
+      px(10, 13, p.accent);
     }
-    render();
-    return;
-  }
 
-  if (state.mode === "result") {
-    state.completed[scene.id] = true;
-    if (state.sceneIndex < scenes.length - 1) {
-      state.sceneIndex += 1;
-      state.lineIndex = 0;
-      state.mode = state.selectedChoices[currentScene().id] !== undefined ? "result" : "dialogue";
-      state.focusedChoice = 0;
-    } else {
-      state.mode = "ending";
+    if (key === "baba") {
+      r(3, 12, 3, 9, p.accent);
+      r(12, 12, 3, 9, p.accent);
+      r(8, 12, 2, 7, "#ffffff");
     }
-    render();
+
+    if (key === "oguz") {
+      r(7, 12, 4, 3, outfit === "wedding" ? "#ffffff" : "#fff8df");
+      px(8, 15, p.accent);
+      px(9, 15, p.accent);
+    }
+
+    if (key === "anne") {
+      r(2, 12, 3, 9, p.accent);
+      r(13, 12, 3, 9, p.accent);
+    }
+
+    drawHead(r, px, p, 3, 0, 12, 12, false);
+  }
+
+  ctx.restore();
+}
+
+function drawHead(r, px, p, x, y, w, h, young) {
+  if (p.bald) {
+    r(x + 1, y + 3, w - 2, h - 2, p.skin);
+    r(x + 1, y + 2, w - 2, 2, p.shade);
+  } else if (p.hairStyle === "long") {
+    r(x, y + 1, w, h + 5, p.hair);
+    r(x + 1, y + 4, w - 2, h - 1, p.skin);
+  } else if (p.hairStyle === "bob") {
+    r(x, y + 1, w, h + 3, p.hair);
+    r(x + 1, y + 4, w - 2, h - 1, p.skin);
+  } else if (p.hairStyle === "short") {
+    r(x + 1, y + 1, w - 2, 5, p.hair);
+    r(x + 1, y + 4, w - 2, h - 2, p.skin);
+  } else {
+    r(x + 1, y + 1, w - 2, 4, p.hair);
+    r(x + 1, y + 4, w - 2, h - 2, p.skin);
+  }
+
+  r(x + 1, y + 4, 2, 1, p.hair);
+  r(x + w - 3, y + 4, 2, 1, p.hair);
+  r(x, y + 6, 1, 3, p.skin);
+  r(x + w - 1, y + 6, 1, 3, p.skin);
+
+  px(x + 4, y + 7, "#151522");
+  px(x + 8, y + 7, "#151522");
+  r(x + 4, y + 6, 2, 1, p.hair);
+  r(x + 8, y + 6, 2, 1, p.hair);
+
+  if (p.glasses) {
+    r(x + 3, y + 6, 4, 3, "#2a2030");
+    r(x + 8, y + 6, 4, 3, "#2a2030");
+    r(x + 4, y + 7, 2, 1, "#a9c9e8");
+    r(x + 9, y + 7, 2, 1, "#a9c9e8");
+    r(x + 7, y + 7, 1, 1, "#2a2030");
+  }
+
+  if (p.beard) {
+    r(x + 3, y + 9, 7, 2, p.hair);
+    r(x + 4, y + 11, 5, 1, p.hair);
+    r(x + 5, y + 10, 4, 1, "#fff7e8");
+  } else {
+    r(x + 5, y + 10, young ? 3 : 4, 1, "#7b2535");
+    if (!young) {
+      px(x + 6, y + 9, "#fff6ee");
+      px(x + 7, y + 9, "#fff6ee");
+    }
   }
 }
 
-function prev() {
-  if (state.mode === "choice") {
-    state.mode = "dialogue";
-    state.lineIndex = currentScene().lines.length - 1;
-    render();
+function drawBaby(feetX, feetY, scale, face) {
+  const U = 2 * scale;
+  const gw = 14;
+  const gh = 19;
+  const ox = feetX - (gw * U) / 2;
+  const oy = feetY - gh * U;
+
+  ctx.save();
+  ctx.translate(ox, oy);
+  if (face === "left") {
+    ctx.translate(gw * U, 0);
+    ctx.scale(-1, 1);
+  }
+
+  const r = (x, y, w, h, c) => rect(x * U, y * U, w * U, h * U, c);
+  const px = (x, y, c) => r(x, y, 1, 1, c);
+  const p = people.kiz;
+
+  r(2, gh - 1, 10, 1, colors.shadow);
+  r(4, 13, 6, 5, p.shirt);
+  r(2, 14, 3, 3, p.skin);
+  r(9, 14, 3, 3, p.skin);
+  r(4, 17, 3, 2, p.shoes);
+  r(8, 17, 3, 2, p.shoes);
+  r(2, 1, 10, 10, p.hair);
+  r(3, 4, 8, 8, p.skin);
+  px(5, 7, "#111522");
+  px(8, 7, "#111522");
+  r(5, 10, 4, 1, "#7b2535");
+  r(3, 2, 3, 2, p.hair);
+  r(8, 2, 3, 2, p.hair);
+  ctx.restore();
+}
+
+function drawCat(feetX, feetY, scale, face) {
+  const U = 2 * scale;
+  const gw = 30;
+  const gh = 18;
+  const ox = feetX - (gw * U) / 2;
+  const oy = feetY - gh * U;
+
+  ctx.save();
+  ctx.translate(ox, oy);
+  if (face === "left") {
+    ctx.translate(gw * U, 0);
+    ctx.scale(-1, 1);
+  }
+
+  const r = (x, y, w, h, c) => rect(x * U, y * U, w * U, h * U, c);
+  const px = (x, y, c) => r(x, y, 1, 1, c);
+  const fur = "#f2f2ed";
+  const patch = "#6b7178";
+  const stripe = "#454b52";
+
+  r(4, 17, 20, 1, colors.shadow);
+  r(6, 9, 15, 7, fur);
+  r(5, 10, 2, 5, fur);
+  r(18, 10, 3, 5, fur);
+  r(7, 9, 8, 4, patch);
+  r(8, 10, 1, 2, stripe);
+  r(11, 9, 1, 3, stripe);
+  r(14, 10, 1, 2, stripe);
+  r(22, 5, 7, 7, fur);
+  r(22, 4, 2, 3, "#ff9ba8");
+  r(27, 4, 2, 3, "#ff9ba8");
+  r(22, 5, 4, 3, patch);
+  px(24, 8, "#79d64b");
+  px(27, 8, "#79d64b");
+  px(26, 10, "#ef7f9b");
+  r(23, 12, 5, 1, "#ef5b2f");
+  r(24, 13, 3, 2, "#f5b21b");
+  r(1, 8, 5, 2, patch);
+  r(0, 6, 2, 3, patch);
+  line(26 * U, 10 * U, 31 * U, 9 * U, "#111522", U);
+  line(26 * U, 11 * U, 31 * U, 11 * U, "#111522", U);
+  line(25 * U, 11 * U, 21 * U, 10 * U, "#111522", U);
+  r(8, 15, 2, 3, fur);
+  r(17, 15, 2, 3, fur);
+  ctx.restore();
+}
+
+function drawCharacter(c) {
+  if (c.key === "fiko") {
+    drawCat(c.x, c.y, c.s, c.face);
+  } else {
+    drawHuman(c.x, c.y, c.s, c.face, c.key, c.stage, c.outfit || "");
+  }
+}
+
+function drawStars(t, count = 50) {
+  for (let i = 0; i < count; i++) {
+    const alpha = 0.25 + 0.45 * Math.abs(Math.sin(t * 0.04 + i));
+    rect((i * 109) % W, (i * 61) % 180, 2, 2, `rgba(255,255,255,${alpha})`);
+  }
+}
+
+function drawBackground(scene) {
+  const t = frame;
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+
+  if (scene.bg === "home") {
+    g.addColorStop(0, "#2d1830");
+    g.addColorStop(1, "#6c3040");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    rect(0, 305, W, 195, "#3a241d");
+    for (let x = 0; x < W; x += 48) rect(x, 308, 42, 190, x % 96 ? "#493022" : "#3e281d");
+    rect(70, 130, 190, 100, "#1b1831");
+    rect(82, 142, 166, 76, "#4d79a4");
+    rect(88, 148, 70, 64, "#8cc5e0");
+    rect(168, 148, 70, 64, "#8cc5e0");
+    rect(520, 250, 170, 60, "#5b3724");
+    rect(535, 220, 40, 30, "#d9b77a");
+    rect(600, 218, 40, 32, "#b85c64");
+    drawBusSign();
+  } else if (scene.bg === "school") {
+    g.addColorStop(0, "#85c7ef");
+    g.addColorStop(1, "#b8dfac");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    rect(0, 335, W, 165, "#4c6b45");
+    rect(180, 150, 440, 185, "#c98755");
+    rect(205, 180, 70, 60, "#263757");
+    rect(320, 180, 70, 60, "#263757");
+    rect(435, 180, 70, 60, "#263757");
+    rect(280, 260, 80, 75, "#38251e");
+    rect(245, 115, 310, 35, "#a76644");
+    pixelText("BALIKESİR FEN LİSESİ", 400, 140, 10, "#fff1d6", "center");
+    drawBooks(610, 285);
+  } else if (scene.bg === "bosphorus" || scene.bg === "campus") {
+    g.addColorStop(0, scene.bg === "campus" ? "#f2c27e" : "#77c6ee");
+    g.addColorStop(1, scene.bg === "campus" ? "#8d4e6c" : "#245c88");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    rect(0, 300, W, 52, "#1b5f89");
+    for (let x = 0; x < W; x += 22) rect(x, 320 + Math.sin((x + t) * 0.04) * 3, 14, 2, "rgba(200,240,255,0.45)");
+    rect(0, 352, W, 148, scene.bg === "campus" ? "#51435c" : "#4d5b66");
+    drawBridge();
+    if (scene.bg === "campus") {
+      rect(80, 230, 130, 92, "#7f5640");
+      rect(105, 252, 30, 40, "#2b314b");
+      rect(152, 252, 30, 40, "#2b314b");
+      rect(92, 212, 106, 20, "#5d3d30");
+    }
+  } else if (scene.bg === "diner") {
+    g.addColorStop(0, "#17122a");
+    g.addColorStop(1, "#4b263b");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    drawStars(t, 24);
+    rect(0, 322, W, 178, "#352227");
+    rect(0, 260, W, 70, "#2a1a1d");
+    rect(70, 185, 230, 85, "#533220");
+    rect(85, 200, 200, 55, "#f2d9a6");
+    pixelText("BALIKÇI", 185, 235, 13, "#1b1a25", "center");
+    drawFish(620, 245);
+    rect(80, 340, 170, 24, "#5a3522");
+    rect(105, 363, 8, 45, "#342013");
+    rect(210, 363, 8, 45, "#342013");
+  } else if (scene.bg === "wedding") {
+    g.addColorStop(0, "#ffe3bb");
+    g.addColorStop(1, "#c76d97");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    rect(0, 330, W, 170, "#5c426a");
+    for (let i = 0; i < 18; i++) drawHeart(40 + i * 44, 100 + Math.sin(t * 0.02 + i) * 16, 7, "rgba(255,64,129,0.25)");
+    rect(240, 128, 320, 18, "#fff1d6");
+    rect(260, 146, 280, 160, "rgba(255,255,255,0.18)");
+    drawRings(390, 240);
+  } else if (scene.bg === "airport") {
+    g.addColorStop(0, "#b8e5ff");
+    g.addColorStop(1, "#d4d7dc");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    rect(0, 315, W, 185, "#66717c");
+    for (let x = 0; x < W; x += 90) rect(x, 355, 52, 6, "#f2f2cf");
+    drawPlane(540, 130);
+    rect(70, 210, 190, 60, "#2c344a");
+    pixelText("GATE 27", 165, 248, 11, "#fff1d6", "center");
+  } else {
+    g.addColorStop(0, "#0b1430");
+    g.addColorStop(0.45, "#263b62");
+    g.addColorStop(1, "#80b887");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    drawStars(t, 45);
+    rect(0, 325, W, 175, "#365b50");
+    rect(190, 210, 410, 120, "#5b463a");
+    rect(210, 230, 370, 80, "#7b5b48");
+    rect(235, 248, 95, 45, "#2c3650");
+    rect(470, 248, 80, 45, "#2c3650");
+    drawTest(610, 280);
+  }
+
+  drawScanlines();
+}
+
+function drawScanlines() {
+  for (let y = 0; y < H; y += 4) rect(0, y, W, 1, "rgba(255,255,255,0.035)");
+}
+
+function drawBusSign() {
+  rect(360, 260, 120, 58, "#f3c452");
+  rect(372, 272, 96, 28, "#ffffff");
+  rect(382, 304, 16, 14, "#111522");
+  rect(442, 304, 16, 14, "#111522");
+  pixelText("BALIKESİR", 420, 290, 7, "#151522", "center");
+}
+
+function drawBooks(x, y) {
+  rect(x, y, 95, 16, "#d64758");
+  rect(x + 12, y - 18, 80, 16, "#4f8ddb");
+  rect(x + 28, y - 36, 70, 16, "#ffd166");
+}
+
+function drawBridge() {
+  line(20, 285, 780, 285, "#fff1d6", 4);
+  for (let x = 60; x < 760; x += 55) line(x, 245, x, 285, "rgba(255,241,214,0.65)", 2);
+  line(60, 245, 740, 245, "#fff1d6", 2);
+  rect(150, 230, 12, 70, "#fff1d6");
+  rect(635, 230, 12, 70, "#fff1d6");
+}
+
+function drawFish(x, y) {
+  rect(x, y, 75, 34, "#9fc6d0");
+  rect(x + 66, y + 8, 25, 18, "#6e9eaa");
+  rect(x + 12, y + 8, 25, 8, "#f6f1e0");
+  rect(x + 54, y + 10, 5, 5, "#111522");
+}
+
+function drawRings(x, y) {
+  ctx.strokeStyle = colors.gold;
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.arc(x - 22, y, 25, 0, Math.PI * 2);
+  ctx.arc(x + 22, y, 25, 0, Math.PI * 2);
+  ctx.stroke();
+}
+
+function drawPlane(x, y) {
+  rect(x - 90, y + 24, 180, 22, "#f7f7ee");
+  rect(x - 10, y, 36, 70, "#dfe7f0");
+  rect(x - 75, y + 6, 38, 24, "#f7f7ee");
+  rect(x + 30, y + 8, 46, 20, "#f7f7ee");
+  rect(x - 60, y + 30, 8, 7, "#80d0ff");
+  rect(x - 42, y + 30, 8, 7, "#80d0ff");
+  rect(x - 24, y + 30, 8, 7, "#80d0ff");
+}
+
+function drawTest(x, y) {
+  rect(x, y, 118, 34, "#fff8df");
+  rect(x + 8, y + 8, 18, 18, "#ff80ab");
+  rect(x + 42, y + 14, 12, 4, "#ff4081");
+  rect(x + 66, y + 14, 12, 4, "#ff4081");
+}
+
+function drawDialog() {
+  const scene = scenes[sceneIndex];
+  const lineData = scene.lines[lineIndex];
+  const shown = lineData.text.slice(0, Math.min(lineData.text.length, Math.floor(tick / 1.35)));
+  const border = lineData.tone === "m" ? colors.rose : lineData.tone === "o" ? colors.blue : lineData.tone === "s" ? colors.gold : "#b9b9c8";
+
+  rect(38, H - 136, W - 76, 112, "rgba(6,6,17,0.93)");
+  ctx.strokeStyle = border;
+  ctx.lineWidth = 3;
+  ctx.strokeRect(38, H - 136, W - 76, 112);
+
+  if (lineData.who !== "ANLATICI") {
+    pixelText(lineData.who, 60, H - 111, 10, border);
+  }
+
+  wrapText(shown, 60, lineData.who === "ANLATICI" ? H - 100 : H - 86, W - 120, 18, 10, "#e9d9ef");
+
+  if (shown.length >= lineData.text.length && Math.floor(frame / 28) % 2 === 0) {
+    pixelText("ENTER", W - 132, H - 40, 8, colors.rose);
+  }
+}
+
+function wrapText(text, x, y, maxWidth, lineHeight, size, color) {
+  ctx.font = `${size}px "Press Start 2P", monospace`;
+  ctx.fillStyle = color;
+  const words = text.split(" ");
+  let lineText = "";
+  let yy = y;
+
+  for (const word of words) {
+    const test = `${lineText}${word} `;
+    if (ctx.measureText(test).width > maxWidth && lineText) {
+      ctx.fillText(lineText, x, yy);
+      lineText = `${word} `;
+      yy += lineHeight;
+    } else {
+      lineText = test;
+    }
+  }
+  ctx.fillText(lineText, x, yy);
+}
+
+function drawTitle() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#080616");
+  g.addColorStop(0.55, "#1b0a28");
+  g.addColorStop(1, "#080616");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  drawStars(frame, 70);
+  for (let i = 0; i < 12; i++) {
+    drawHeart((i * 76 + frame * 0.45) % W, H - ((i * 43 + frame * 0.7) % (H + 60)), 5 + (i % 3), "rgba(255,64,129,0.16)");
+  }
+
+  drawHuman(305, 330, 1.95, "right", "merve", "adult");
+  drawHuman(500, 330, 1.9, "left", "oguz", "adult");
+  drawCat(405, 350, 1.45, "right");
+
+  pixelText("MERVE", W / 2, 82, 30, colors.pink, "center");
+  pixelText("8-BIT HAYAT GÜNLÜĞÜ", W / 2, 122, 13, colors.rose, "center");
+  pixelText("Balıkesir'den Kanada'ya bir büyüme hikayesi", W / 2, 160, 8, "#b991aa", "center");
+
+  if (Math.floor(frame / 30) % 2 === 0) {
+    pixelText("ENTER ile başla", W / 2, 438, 10, "#fff7f0", "center");
+  }
+  drawScanlines();
+}
+
+function drawEnding() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#061020");
+  g.addColorStop(1, "#24102d");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  drawStars(frame, 85);
+
+  drawHuman(315, 355, 1.9, "right", "merve", "adult");
+  drawHuman(500, 355, 1.8, "left", "oguz", "adult");
+  drawCat(410, 378, 1.35, "right");
+  drawHeart(408, 214 + Math.sin(frame * 0.04) * 6, 25, "rgba(255,64,129,0.72)");
+
+  pixelText("YENİ SEVİYE AÇILDI", W / 2, 78, 18, colors.gold, "center");
+  pixelText("ANNE", W / 2, 120, 28, colors.rose, "center");
+  wrapText("Merve artık tecrübeli, sevgi dolu ve güçlü bir kadın. Hikaye bitmedi; yeni bölüm şimdi başlıyor.", 105, 405, 590, 20, 10, "#e9d9ef");
+  if (Math.floor(frame / 34) % 2 === 0) pixelText("ENTER ile tekrar oyna", W / 2, 474, 8, "#fff7f0", "center");
+  drawScanlines();
+}
+
+function drawStory() {
+  const scene = scenes[sceneIndex];
+  hudLeft.textContent = scene.level;
+  hudCenter.textContent = scene.title;
+  hudRight.textContent = `${scene.age} / ${scene.year}`;
+
+  drawBackground(scene);
+  pixelText(scene.place, 24, 34, 10, colors.cream);
+  pixelText(scene.title, W / 2, 62, 14, colors.gold, "center");
+
+  for (const cast of scene.cast) drawCharacter(cast);
+  drawDialog();
+}
+
+function nextLine() {
+  if (mode === "title") {
+    mode = "story";
+    sceneIndex = 0;
+    lineIndex = 0;
+    tick = 0;
     return;
   }
 
-  if (state.mode === "result" || state.mode === "ending") {
-    state.mode = "choice";
-    render();
+  if (mode === "ending") {
+    mode = "title";
+    sceneIndex = 0;
+    lineIndex = 0;
+    tick = 0;
     return;
   }
 
-  if (state.lineIndex > 0) {
-    state.lineIndex -= 1;
-    render();
+  const scene = scenes[sceneIndex];
+  const lineData = scene.lines[lineIndex];
+  if (Math.floor(tick / 1.35) < lineData.text.length) {
+    tick = lineData.text.length * 1.35;
     return;
   }
 
-  if (state.sceneIndex > 0) {
-    state.sceneIndex -= 1;
-    state.lineIndex = 0;
-    state.mode = state.selectedChoices[currentScene().id] !== undefined ? "result" : "dialogue";
-    render();
+  if (lineIndex < scene.lines.length - 1) {
+    lineIndex += 1;
+    tick = 0;
+    return;
   }
-}
 
-function choose(index) {
-  const scene = currentScene();
-  state.selectedChoices[scene.id] = index;
-  state.completed[scene.id] = true;
-  state.mode = scene.id === "bugun" ? "ending" : "result";
-  render();
-}
-
-function reset() {
-  try {
-    localStorage.removeItem("merveRetroGame");
-  } catch {
-    // Kayit yoksa veya tarayici izin vermiyorsa sifirlama yine devam eder.
+  if (sceneIndex < scenes.length - 1) {
+    sceneIndex += 1;
+    lineIndex = 0;
+    tick = 0;
+    flash = 18;
+    return;
   }
-  state.started = true;
-  state.sceneIndex = 0;
-  state.lineIndex = 0;
-  state.mode = "dialogue";
-  state.selectedChoices = {};
-  state.completed = {};
-  state.focusedChoice = 0;
-  render();
+
+  mode = "ending";
+  tick = 0;
 }
 
-function startGame() {
-  state.started = true;
-  els.bootScreen.classList.add("is-hidden");
-  render();
-}
+function loop() {
+  frame += 1;
+  tick += 1;
+  ctx.clearRect(0, 0, W, H);
 
-els.startButton.addEventListener("click", startGame);
-els.nextButton.addEventListener("click", next);
-els.prevButton.addEventListener("click", prev);
-els.resetButton.addEventListener("click", reset);
+  if (mode === "title") {
+    hudLeft.textContent = "";
+    hudCenter.textContent = "";
+    hudRight.textContent = "";
+    drawTitle();
+  } else if (mode === "ending") {
+    hudLeft.textContent = "FINAL";
+    hudCenter.textContent = "YENİ CAN HABERİ";
+    hudRight.textContent = "35 yaş";
+    drawEnding();
+  } else {
+    drawStory();
+  }
+
+  if (flash > 0) {
+    rect(0, 0, W, H, `rgba(255,255,255,${flash / 24})`);
+    flash -= 1;
+  }
+
+  requestAnimationFrame(loop);
+}
 
 document.addEventListener("keydown", (event) => {
-  if (!state.started && (event.key === "Enter" || event.key === " ")) {
+  if (event.code === "Enter" || event.code === "Space") {
     event.preventDefault();
-    startGame();
-    return;
-  }
-
-  if (state.mode === "choice") {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      event.preventDefault();
-      state.focusedChoice = (state.focusedChoice + 1) % currentScene().choices.length;
-      render();
-      return;
-    }
-
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      event.preventDefault();
-      state.focusedChoice = (state.focusedChoice + currentScene().choices.length - 1) % currentScene().choices.length;
-      render();
-      return;
-    }
-
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      choose(state.focusedChoice);
-      return;
-    }
-  }
-
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    next();
+    nextLine();
   }
 });
 
-loadState();
+canvas.addEventListener("pointerdown", nextLine);
 
-if (state.started) {
-  els.bootScreen.classList.add("is-hidden");
-}
-
-render();
+loop();

@@ -7,76 +7,13 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="boot-screen" id="bootScreen">
-      <div class="cartridge">
-        <span class="cartridge-kicker">RETRO LIFE QUEST</span>
-        <h1>Merve: 8-Bit Hayat Günlüğü</h1>
-        <p>Balıkesir'den İstanbul'a, İstanbul'dan Kanada'ya uzanan bir büyüme hikayesi.</p>
-        <button class="primary-button" id="startButton" type="button">Oyuna Başla</button>
+    <main class="game-wrap">
+      <div id="hud">
+        <span id="hudLeft"></span>
+        <span id="hudCenter"></span>
+        <span id="hudRight"></span>
       </div>
-    </div>
-
-    <main class="arcade-shell" id="gameRoot">
-      <header class="hud">
-        <div class="brand-block">
-          <span class="brand-kicker">MERVE QUEST</span>
-          <h2 id="sceneTitle">Bölüm Yükleniyor</h2>
-        </div>
-
-        <div class="hud-meta" aria-label="Sahne bilgileri">
-          <span id="levelLabel">LEVEL 01</span>
-          <span id="ageLabel">14 yaş</span>
-          <span id="yearLabel">2005</span>
-        </div>
-      </header>
-
-      <section class="game-layout">
-        <aside class="side-panel timeline-panel">
-          <h3>Zaman Çizgisi</h3>
-          <div class="timeline" id="timeline"></div>
-        </aside>
-
-        <section class="game-screen" aria-live="polite">
-          <div class="scene-stage" id="sceneStage">
-            <div class="scene-skyline" id="sceneSkyline"></div>
-            <div class="pixel-sign" id="sceneSign"></div>
-            <div class="stage-prop" id="stageProp"></div>
-            <div class="cast-layer" id="castLayer"></div>
-          </div>
-
-          <section class="dialogue-box">
-            <div class="dialogue-header">
-              <span class="speaker" id="speakerName">ANLATICI</span>
-              <span class="location" id="locationLabel">Konum</span>
-            </div>
-            <p class="dialogue-text" id="dialogueText"></p>
-            <div class="choice-grid" id="choiceGrid"></div>
-            <div class="result-line" id="resultLine" hidden></div>
-          </section>
-
-          <nav class="control-row" aria-label="Oyun kontrolleri">
-            <button class="icon-button" id="prevButton" type="button" aria-label="Önceki sahne">&lt;</button>
-            <button class="primary-button" id="nextButton" type="button">Devam</button>
-            <button class="icon-button" id="resetButton" type="button" aria-label="Başa dön">R</button>
-          </nav>
-        </section>
-
-        <aside class="side-panel stats-panel">
-          <h3>Karakter</h3>
-          <div class="mini-card">
-            <img src="assets/merve.png" alt="Merve retro portresi" />
-            <div>
-              <strong>Merve</strong>
-              <span id="growthLabel">Küçük Kız</span>
-            </div>
-          </div>
-
-          <div class="stat-list" id="statList"></div>
-
-          <h3>Anılar</h3>
-          <div class="memory-list" id="memoryList"></div>
-        </aside>
-      </section>
+      <canvas id="game" width="800" height="500" aria-label="Merve retro hikaye oyunu"></canvas>
     </main>
 
     <script src="game.js" defer></script>
