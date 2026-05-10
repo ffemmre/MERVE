@@ -312,7 +312,7 @@ function drawHuman(feetX, feetY, scale, face, key, stage = "adult", outfit = "")
     r(1, 13 + step, 3, 5, p.skin);
     r(14, 13 - step, 3, 5, p.skin);
     r(7, 9, 4, 3, p.skin);
-    drawHead(r, px, p, 3, 0, 12, 11, true);
+    drawHead(r, px, p, 4, 1, 10, 8, true, true);
   } else {
     r(4, 20, 4, 6, p.pants);
     r(10, 20, 4, 6, p.pants);
@@ -347,57 +347,66 @@ function drawHuman(feetX, feetY, scale, face, key, stage = "adult", outfit = "")
       r(13, 12, 3, 9, p.accent);
     }
 
-    drawHead(r, px, p, 3, 0, 12, 12, false);
+    const compactHead = key === "merve" || key === "kiz";
+    drawHead(r, px, p, compactHead ? 4 : 3, compactHead ? 1 : 0, compactHead ? 10 : 12, compactHead ? 10 : 12, false, compactHead);
   }
 
   ctx.restore();
 }
 
-function drawHead(r, px, p, x, y, w, h, young) {
+function drawHead(r, px, p, x, y, w, h, young, compact = false) {
+  const hairExtra = compact ? 1 : 3;
+  const longHairExtra = compact ? 2 : 5;
+  const faceTop = compact ? 3 : 4;
+  const eyeY = compact ? y + 6 : y + 7;
+  const browY = compact ? y + 5 : y + 6;
+  const mouthY = compact ? y + 9 : y + 10;
+
   if (p.bald) {
     r(x + 1, y + 3, w - 2, h - 2, p.skin);
     r(x + 1, y + 2, w - 2, 2, p.shade);
   } else if (p.hairStyle === "long") {
-    r(x, y + 1, w, h + 5, p.hair);
-    r(x + 1, y + 4, w - 2, h - 1, p.skin);
+    r(x, y + 1, w, h + longHairExtra, p.hair);
+    r(x + 1, y + faceTop, w - 2, h - 2, p.skin);
   } else if (p.hairStyle === "bob") {
-    r(x, y + 1, w, h + 3, p.hair);
-    r(x + 1, y + 4, w - 2, h - 1, p.skin);
+    r(x, y + 1, w, h + hairExtra, p.hair);
+    r(x + 1, y + faceTop, w - 2, h - 2, p.skin);
   } else if (p.hairStyle === "short") {
     r(x + 1, y + 1, w - 2, 5, p.hair);
-    r(x + 1, y + 4, w - 2, h - 2, p.skin);
+    r(x + 1, y + faceTop, w - 2, h - 2, p.skin);
   } else {
     r(x + 1, y + 1, w - 2, 4, p.hair);
-    r(x + 1, y + 4, w - 2, h - 2, p.skin);
+    r(x + 1, y + faceTop, w - 2, h - 2, p.skin);
   }
 
-  r(x + 1, y + 4, 2, 1, p.hair);
-  r(x + w - 3, y + 4, 2, 1, p.hair);
-  r(x, y + 6, 1, 3, p.skin);
-  r(x + w - 1, y + 6, 1, 3, p.skin);
+  r(x + 1, y + faceTop, 2, 1, p.hair);
+  r(x + w - 3, y + faceTop, 2, 1, p.hair);
+  r(x, eyeY - 1, 1, 2, p.skin);
+  r(x + w - 1, eyeY - 1, 1, 2, p.skin);
 
-  px(x + 4, y + 7, "#151522");
-  px(x + 8, y + 7, "#151522");
-  r(x + 4, y + 6, 2, 1, p.hair);
-  r(x + 8, y + 6, 2, 1, p.hair);
+  px(x + 3, eyeY, "#151522");
+  px(x + w - 4, eyeY, "#151522");
+  r(x + 3, browY, 2, 1, p.hair);
+  r(x + w - 5, browY, 2, 1, p.hair);
 
   if (p.glasses) {
-    r(x + 3, y + 6, 4, 3, "#2a2030");
-    r(x + 8, y + 6, 4, 3, "#2a2030");
-    r(x + 4, y + 7, 2, 1, "#a9c9e8");
-    r(x + 9, y + 7, 2, 1, "#a9c9e8");
-    r(x + 7, y + 7, 1, 1, "#2a2030");
+    const lensW = compact ? 3 : 4;
+    const rightLensX = x + w - lensW - 2;
+    r(x + 2, browY, lensW, 3, "#2a2030");
+    r(rightLensX, browY, lensW, 3, "#2a2030");
+    r(x + 3, eyeY, Math.max(1, lensW - 2), 1, "#a9c9e8");
+    r(rightLensX + 1, eyeY, Math.max(1, lensW - 2), 1, "#a9c9e8");
+    r(x + Math.floor(w / 2), eyeY, 1, 1, "#2a2030");
   }
 
   if (p.beard) {
-    r(x + 3, y + 9, 7, 2, p.hair);
-    r(x + 4, y + 11, 5, 1, p.hair);
-    r(x + 5, y + 10, 4, 1, "#fff7e8");
+    r(x + 3, mouthY - 1, 7, 2, p.hair);
+    r(x + 4, mouthY + 1, 5, 1, p.hair);
+    r(x + 5, mouthY, 4, 1, "#fff7e8");
   } else {
-    r(x + 5, y + 10, young ? 3 : 4, 1, "#7b2535");
+    r(x + Math.floor(w / 2) - 1, mouthY, young ? 2 : 3, 1, "#7b2535");
     if (!young) {
-      px(x + 6, y + 9, "#fff6ee");
-      px(x + 7, y + 9, "#fff6ee");
+      px(x + Math.floor(w / 2), mouthY - 1, "#fff6ee");
     }
   }
 }
@@ -421,18 +430,18 @@ function drawBaby(feetX, feetY, scale, face) {
   const p = people.kiz;
 
   r(2, gh - 1, 10, 1, colors.shadow);
-  r(4, 13, 6, 5, p.shirt);
-  r(2, 14, 3, 3, p.skin);
-  r(9, 14, 3, 3, p.skin);
+  r(4, 12, 6, 6, p.shirt);
+  r(2, 13, 3, 3, p.skin);
+  r(9, 13, 3, 3, p.skin);
   r(4, 17, 3, 2, p.shoes);
   r(8, 17, 3, 2, p.shoes);
-  r(2, 1, 10, 10, p.hair);
-  r(3, 4, 8, 8, p.skin);
-  px(5, 7, "#111522");
-  px(8, 7, "#111522");
-  r(5, 10, 4, 1, "#7b2535");
-  r(3, 2, 3, 2, p.hair);
-  r(8, 2, 3, 2, p.hair);
+  r(3, 2, 8, 8, p.hair);
+  r(4, 5, 6, 6, p.skin);
+  px(5, 8, "#111522");
+  px(8, 8, "#111522");
+  r(6, 10, 2, 1, "#7b2535");
+  r(4, 2, 2, 2, p.hair);
+  r(8, 2, 2, 2, p.hair);
   ctx.restore();
 }
 
